@@ -11,8 +11,7 @@ ________________________________________________________________
 
 source: 
 
-https://www.google.ca/books/edition/DNA_Photodamage/9KxTEAAAQBAJ?hl=en&gbpv=1&pg=PA2&printsec=frontcover
-
+https://books-rsc-org.myaccess.library.utoronto.ca/books/edited-volume/1764/chapter/1242803/Photoinduced-Dimerization-in-DNA-Singlet-Excited
       
 DEMO:
     vignette("decaying_dimer", package = "GillespieSSA")
