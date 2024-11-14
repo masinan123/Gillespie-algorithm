@@ -28,3 +28,12 @@ R --c--> 0
 DEMO: 
 
 vignette("radioactive_decay", package = "GillespieSSA")
+
+_________________________________________________________________
+
+3. ATP hydrolysis
+  
+  ATP stores energy, this energy is released when it is split into ADP and P (a process called hydrolysis). This energy is required for several different processes, such as muscle contraction or protein synthesis. We can choose a specific cell (such as atype of muscle cell or a plant cell) to choose our initial amount of ATP, and simulate ATP hydrolysis in this cell.
+  
+  ATP --c--> ADP + P
+  
