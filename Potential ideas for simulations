@@ -9,12 +9,24 @@ ________________________________________________________________
  T1 + T2 --c2--> CPD
       T2 --c3--> 64-PP
 
+We will simulate the dimerization of thymine using propensity based on the formation yield of CPD (~37 per 10^6 normal bases) and 64-PP (~2 per 10^6 normal bases) found by exposing skin cells to a UVB dose of 0.2 J/cm^2 (ref 2, Fig. 1A). Please note that in ref 2, the CPD product of T1+T2 is referred to as T<>T and the 64-PP product of T1+T2 is referred to as TT(6-4). 
+
+c1 = 1-(37+2/10^6)
+c2 = 37/10^6
+c3 = 2/10^6
+
+initial state vector: we can choose any starting amount of T1=T2 (as these values vary per person); starting CPD and 64-PP is 0
+
+
 source: 
 
-https://books-rsc-org.myaccess.library.utoronto.ca/books/edited-volume/1764/chapter/1242803/Photoinduced-Dimerization-in-DNA-Singlet-Excited
+1. https://books-rsc-org.myaccess.library.utoronto.ca/books/edited-volume/1764/chapter/1242803/Photoinduced-Dimerization-in-DNA-Singlet-Excited
+
+2. https://doi.org/10.1073/pnas.060421310
       
 DEMO:
     vignette("decaying_dimer", package = "GillespieSSA")
+    
 
 _________________________________________________________________
 
