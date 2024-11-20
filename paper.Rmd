@@ -1,0 +1,189 @@
+---
+title: "The Gillespie Algorithm: Stochastic Modeling of Molecular Reaction Networks"
+author: 
+  - Jiayu Guo
+  - Sinan Ma 
+  - Anna Szydlowski
+date: "`r Sys.Date()`"
+output:
+  pdf_document:
+    number_sections: true
+    citation_package: biblatex 
+spacing: double
+header-includes:
+  - \usepackage{fancyhdr}
+  - \pagestyle{fancy}
+  - \fancyhead[L]{Title of Project}
+  - \fancyfoot[CO,CE]{}
+  - \fancyfoot[LE,RO]{\thepage}
+  - \usepackage{setspace}\doublespacing
+bibliography: references.bib 
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+\newpage 
+\tableofcontents 
+\newpage
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+\newpage
+
+# Introduction
+
+This is an R Markdown document. Markdown is a simple formatting syntax
+for authoring HTML, PDF, and MS Word documents. For more details on
+using R Markdown see <http://rmarkdown.rstudio.com>. We analysis the data in R(@citeR).
+
+The rest of this project is as follows. In Section 2, we review some
+basic concepts. In Section 3, we introduce the topic. In Section 4, we
+have an application and simualtion. Section 5 provides conclusion and
+some closing remarks.
+
+# Review of the Topic
+
+When you click the **Knit** button a document will be generated that
+includes both content as well as the output of any embedded R code
+chunks within the document. You can embed an R code chunk like this:
+
+```{r cars,comment=NA}
+summary(cars)
+```
+
+You can also embed publication quality plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+## Definitions and Examples
+
+Such as importance of longitudinal data analysis (separate age and
+cohort effect like in the effect of age on reading ability), different
+correlation structures, missing data, etc.
+
+## Details of the topic
+
+This is a mathematical formua without formula number.
+$$h(x) = \frac{f(x)}{S(x)} = -\frac{d \log[S(x])}{\rm dx}$$
+
+This is how write a fomula and label it. \begin{align}
+\label{eq2}
+S(x) = \exp[-H(x)] = \exp[-\int_0^x h(u) {\rm d}u]
+\end{align}
+
+# Application
+
+```{r}
+# Load required libraries
+if (!require("reshape2")) install.packages("reshape2")
+if (!require("ggplot2")) install.packages("ggplot2")
+library(reshape2)
+library(ggplot2)
+
+# Define reaction rates
+c1 <- (1 - (37 + 2) / 1e6) * 100   # Decay of T2
+c2 <- (37 / 1e6) * 100             # Formation of CPD
+c3 <- (2 / 1e6) * 100              # Formation of 64-PP
+
+# Initial state
+state <- c(T1 = 10000, T2 = 10000, CPD = 0, `64PP` = 0)
+
+# Define propensity functions
+propensities <- function(state) {
+  c(
+    c1 * state["T2"],               # Reaction 1
+    c2 * state["T1"] * state["T2"], # Reaction 2
+    c3 * state["T2"]                # Reaction 3
+  )
+}
+
+# Gillespie simulation function
+simulate_gillespie <- function(state, max_time) {
+  # Initialize time and output data frame
+  time <- 0
+  output <- data.frame(
+    Time = numeric(0),
+    T1 = numeric(0),
+    T2 = numeric(0),
+    CPD = numeric(0),
+    `64PP` = numeric(0)
+  )
+  
+  # Record the initial state
+  initial_row <- c(Time = time, state)
+  output <- rbind(output, as.data.frame(t(initial_row), stringsAsFactors = FALSE))
+  
+  while (time < max_time) {
+    # Calculate propensities
+    props <- propensities(state)
+    total_prop <- sum(props)
+    
+    # Stop if no reactions can occur
+    if (total_prop == 0) break
+    
+    # Time to next reaction
+    delta_t <- rexp(1, rate = total_prop)
+    time <- time + delta_t
+    
+    # Select which reaction occurs
+    reaction <- sample(length(props), 1, prob = props)
+    
+    # Update state based on reaction
+    if (reaction == 1) state["T2"] <- state["T2"] - 1
+    if (reaction == 2) {
+      state["T1"] <- state["T1"] - 1
+      state["T2"] <- state["T2"] - 1
+      state["CPD"] <- state["CPD"] + 1
+    }
+    if (reaction == 3) {
+      state["T2"] <- state["T2"] - 1
+      state["64PP"] <- state["64PP"] + 1
+    }
+    
+    # Record the new state
+    new_row <- c(Time = time, state)
+    output <- rbind(output, as.data.frame(t(new_row), stringsAsFactors = FALSE))
+  }
+  
+  # Convert columns to numeric for consistency
+  output[] <- lapply(output, as.numeric)
+  return(output)
+}
+
+# Run the simulation
+max_time <- 1000
+simulation <- simulate_gillespie(state, max_time)
+
+```
+
+```{r}
+# Reshape data for plotting
+simulation_long <- melt(simulation, id.vars = "Time")
+
+# Plot results
+ggplot(simulation_long, aes(x = Time, y = value, color = variable)) +
+  geom_line() +
+  labs(
+    title = "Decay-Dimerization Reaction Set Simulation",
+    x = "Time",
+    y = "Molecule Count",
+    color = "Species"
+  ) +
+  theme_minimal()
+
+```
+```{r}
+# Display the first few rows of the simulation data
+knitr::kable(head(simulation), format = "html", caption = "Simulation Results (First Few Rows)")
+
+```
+
+
+# Conclusion
+
+# References
