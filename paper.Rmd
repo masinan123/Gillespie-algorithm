@@ -86,7 +86,7 @@ library(reshape2)
 library(ggplot2)
 
 # Define reaction rates
-c1 <- (1 - (37 + 2) / 1e6) * 100   # Decay of T2
+c1 <- (1 - (37 + 2) / 1e6) * 100   # No dimerization occurs
 c2 <- (37 / 1e6) * 100             # Formation of CPD
 c3 <- (2 / 1e6) * 100              # Formation of 64-PP
 
