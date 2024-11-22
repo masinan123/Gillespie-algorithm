@@ -22,7 +22,7 @@ source:
 
 1. https://books-rsc-org.myaccess.library.utoronto.ca/books/edited-volume/1764/chapter/1242803/Photoinduced-Dimerization-in-DNA-Singlet-Excited
 
-2. https://doi.org/10.1073/pnas.060421310
+2. https://www.pnas.org/doi/full/10.1073/pnas.0604213103#t1 
       
 DEMO:
     vignette("decaying_dimer", package = "GillespieSSA")
