@@ -73,16 +73,14 @@ S(x) = \exp[-H(x)] = \exp[-\int_0^x h(u) {\rm d}u]
 \end{align}
 
 # Application
-    We can simulate the dimerization of DNA pyrimidines, a molecular reaction which can lead to skin cancer. Bipyrimidine photodimerization occurs when UV radiation alters the chemical bonds of two consecutive pyrimidine bases, with two possible outcomes: the formation of the cyclobutene pyrimidine dimer (CPD) if a cycloaddition between the C5-C6 double bond of the pyrimidines occurs, or the formation of pyrimidine (6-4) pyrimidone (64-PP) if  a covalent bond forms between C4 and C6 of the pyrimidines (@MartinezFernandez2022).
+We can simulate the dimerization of DNA pyrimidines, a molecular reaction which can lead to skin cancer. Bipyrimidine photodimerization occurs when UV radiation alters the chemical bonds of two consecutive pyrimidine bases, with two possible outcomes: the formation of the cyclobutene pyrimidine dimer (CPD) if a cycloaddition between the C5-C6 double bond of the pyrimidines occurs, or the formation of pyrimidine (6-4) pyrimidone (64-PP) if  a covalent bond forms between C4 and C6 of the pyrimidines (@MartinezFernandez2022).
     
-  Therefore, this simulation involves 4 species and 3 reactions channels: pyrimidine monomers Thymine 1 (T1), Thymine 2 (T2), and dimer photoproducts CPD and 64-PP. 
+Therefore, this simulation involves 4 species and 3 reactions channels: pyrimidine monomers Thymine 1 (T1), Thymine 2 (T2), and dimer photoproducts CPD and 64-PP. 
 
-  We will simulate the dimerization of thymine using propensity based on the formation yield of CPD (~37 per 10^6 normal bases) and 64-PP (~2 per 10^6 normal bases) found by exposing skin cells to a UVB dose of 0.2 J/cm^2 (@Mouret2006). As the amount of thymine bases in DNA varies from person to person, we will simulate thymine photodimerization of 1000 pairs of thymine.
+We will simulate the dimerization of thymine using propensity based on the formation yield of CPD (~37 per 10^6 normal bases) and 64-PP (~2 per 10^6 normal bases) found by exposing skin cells to a UVB dose of 0.2 J/cm^2 (@Mouret2006). As the amount of thymine bases in DNA varies from person to person, we will simulate thymine photodimerization of 1000 pairs of thymine.
 
-```{r}
+```{r simulation_1, echo=FALSE}
 # Load required libraries
-if (!require("reshape2")) install.packages("reshape2")
-if (!require("ggplot2")) install.packages("ggplot2")
 library(reshape2)
 library(ggplot2)
 
@@ -162,7 +160,7 @@ simulation <- simulate_gillespie(state, max_time)
 
 ```
 
-```{r}
+```{r graph_1, echo=FALSE}
 # Reshape data for plotting
 simulation_long <- melt(simulation, id.vars = "Time")
 
@@ -178,11 +176,96 @@ ggplot(simulation_long, aes(x = Time, y = value, color = variable)) +
   theme_minimal()
 
 ```
-```{r}
-# Display the first few rows of the simulation data
-knitr::kable(head(simulation), format = "html", caption = "Simulation Results (First Few Rows)")
+
+
+## Radioactive Decay Simulation
+
+This simulation models the stochastic decay of a single species (\( R \)), which represents a radioactive substance such as radon, radium, or plutonium. The decay process is governed by the following reaction:
+
+\[
+R \xrightarrow{c} 0
+\]
+
+where \( c \) is the decay rate constant that defines the likelihood of decay per unit time.
+
+The Gillespie algorithm is used to simulate this system, capturing the inherent randomness of radioactive decay events. Unlike deterministic approaches, the Gillespie algorithm tracks individual decay events over time, providing an accurate representation of the stochastic nature of the process.
+
+The goal of this simulation is to observe the time evolution of the remaining radioactive molecules (\( R \)) and visualize their decay over time.
+```{r simulation_2, echo=FALSE}
+# Define parameters
+c <- 0.01  # Decay rate constant
+state <- c(R = 1000)  # Initial radioactive substance
+max_time <- 100  # Maximum simulation time
+
+# Define propensity function
+propensities <- function(state) {
+  c * state["R"]
+}
+
+# Gillespie simulation function
+simulate_gillespie <- function(state, max_time) {
+  time <- 0
+  output <- data.frame(Time = numeric(0), R = numeric(0))
+  output <- rbind(output, data.frame(Time = time, R = state["R"]))
+  
+  while (time < max_time) {
+    # Calculate propensity
+    prop <- propensities(state)
+    if (prop == 0) break  # Stop if no reactions can occur
+    
+    # Time to next reaction
+    delta_t <- rexp(1, rate = prop)
+    time <- time + delta_t
+    
+    # Update state (decay reaction)
+    state["R"] <- state["R"] - 1
+    
+    # Record the state
+    output <- rbind(output, data.frame(Time = time, R = state["R"]))
+  }
+  
+  return(output)
+}
+
+# Run the simulation
+simulation <- simulate_gillespie(state, max_time)
 
 ```
+
+```{r graph_2, echo=FALSE}
+library(ggplot2)
+
+# Plot results
+ggplot(simulation, aes(x = Time, y = R)) +
+  geom_line(color = "blue") +
+  labs(
+    title = "Radioactive Decay Simulation",
+    x = "Time",
+    y = "Remaining Radioactive Substance (R)"
+  ) +
+  theme_minimal()
+
+```
+
+### Observations
+
+1. **Exponential Decay**:
+   - The radioactive substance (\( R \)) decays exponentially over time, as expected from the properties of radioactive decay. The number of decay events per unit time decreases as the quantity of \( R \) diminishes.
+   - This behavior is reflected in the propensity function \( a(R) = c \cdot R \), where the decay rate is proportional to the remaining amount of \( R \).
+
+2. **Stochastic Fluctuations**:
+   - Unlike a smooth deterministic decay curve, the simulation shows small fluctuations in the timing of decay events. These fluctuations arise from the stochastic nature of the Gillespie algorithm, which models each decay event as a probabilistic process.
+
+3. **Time Steps and Decay Events**:
+   - The time intervals between decay events (\( \Delta t \)) grow longer as the number of \( R \) molecules decreases. This is because the propensity (\( a(R) \)) becomes smaller, leading to larger expected time intervals between events.
+
+### Biological/Physical Significance
+
+- **Radioactive Half-Life**:
+  - The exponential decay observed in this simulation is consistent with the concept of half-life in radioactive decay. While this model does not explicitly compute the half-life, it demonstrates how the decay rate slows down as the substance depletes.
+
+- **Real-World Applications**:
+  - Radioactive decay processes are critical in many fields, including nuclear physics, medicine (e.g., radiotherapy), and environmental science (e.g., radon gas monitoring). Understanding stochastic decay helps refine predictions in low-count systems where randomness plays a significant role.
 
 
 # Conclusion
