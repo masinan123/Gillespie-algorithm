@@ -35,14 +35,10 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Introduction
 
-This is an R Markdown document. Markdown is a simple formatting syntax
-for authoring HTML, PDF, and MS Word documents. For more details on
-using R Markdown see <http://rmarkdown.rstudio.com>. We analysis the data in R(@citeR).
+The Gillespie Algorithm was presented in 1976 by Daniel T. Gillespie (@Gillespie1976). This algorithm was developed  to answer the question, “If a fixed volume V contains a spatially uniform mixture of N chemical species which can inter-react through M specified chemical reaction channels, then given the numbers of molecules of each species present at some initial time, what will these molecular population levels be at any later time?” (@Gillespie1977). Given the trajectory of this molecular reaction is a stochastic process, this algorithm can simulate various molecular equation systems, such as radioactive decay models or decaying-dimerization reaction sets (@GillespieSSA).
 
-The rest of this project is as follows. In Section 2, we review some
-basic concepts. In Section 3, we introduce the topic. In Section 4, we
-have an application and simualtion. Section 5 provides conclusion and
-some closing remarks.
+In the following report, we will review basic concepts of the Gillespie Algorithm (Section 2), then we will present the theory of the Gillespie Algorithm (Section 3). Afterwards, we will demonstrate a stochastic simulation using the Gillespie algorithm of a dimerization reaction set (Section 4), using R(@citeR). Finally, we will provide our concluding remarks (Section 5).
+
 
 # Review of the Topic
 
