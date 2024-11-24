@@ -77,6 +77,11 @@ S(x) = \exp[-H(x)] = \exp[-\int_0^x h(u) {\rm d}u]
 \end{align}
 
 # Application
+    We can simulate the dimerization of DNA pyrimidines, a molecular reaction which can lead to skin cancer. Bipyrimidine photodimerization occurs when UV radiation alters the chemical bonds of two consecutive pyrimidine bases, with two possible outcomes: the formation of the cyclobutene pyrimidine dimer (CPD) if a cycloaddition between the C5-C6 double bond of the pyrimidines occurs, or the formation of pyrimidine (6-4) pyrimidone (64-PP) if  a covalent bond forms between C4 and C6 of the pyrimidines (@MartinezFernandez2022).
+    
+  Therefore, this simulation involves 4 species and 3 reactions channels: pyrimidine monomers Thymine 1 (T1), Thymine 2 (T2), and dimer photoproducts CPD and 64-PP. 
+
+  We will simulate the dimerization of thymine using propensity based on the formation yield of CPD (~37 per 10^6 normal bases) and 64-PP (~2 per 10^6 normal bases) found by exposing skin cells to a UVB dose of 0.2 J/cm^2 (@Mouret2006). As the amount of thymine bases in DNA varies from person to person, we will simulate thymine photodimerization of 1000 pairs of thymine.
 
 ```{r}
 # Load required libraries
@@ -86,9 +91,9 @@ library(reshape2)
 library(ggplot2)
 
 # Define reaction rates
-c1 <- (1 - (37 + 2) / 1e6) * 100   # No dimerization occurs
-c2 <- (37 / 1e6) * 100             # Formation of CPD
-c3 <- (2 / 1e6) * 100              # Formation of 64-PP
+c1 <- (1 - (37 + 2) / 1e6) * 10   # No dimerization occurs
+c2 <- (37 / 1e6) * 10             # Formation of CPD
+c3 <- (2 / 1e6) * 10              # Formation of 64-PP
 
 # Initial state
 state <- c(T1 = 10000, T2 = 10000, CPD = 0, `64PP` = 0)
@@ -156,7 +161,7 @@ simulate_gillespie <- function(state, max_time) {
 }
 
 # Run the simulation
-max_time <- 1000
+max_time <- 100
 simulation <- simulate_gillespie(state, max_time)
 
 ```
