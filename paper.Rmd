@@ -8,7 +8,6 @@ date: "`r Sys.Date()`"
 output:
   pdf_document:
     number_sections: true
-    citation_package: biblatex 
 spacing: double
 header-includes:
   - \usepackage{fancyhdr}
@@ -17,7 +16,6 @@ header-includes:
   - \fancyfoot[CO,CE]{}
   - \fancyfoot[LE,RO]{\thepage}
   - \usepackage{setspace}\doublespacing
-bibliography: references.bib 
 editor_options: 
   markdown: 
     wrap: 72
@@ -73,7 +71,8 @@ S(x) = \exp[-H(x)] = \exp[-\int_0^x h(u) {\rm d}u]
 \end{align}
 
 # Application
-    We can simulate the dimerization of DNA pyrimidines, a molecular reaction which can lead to skin cancer. Bipyrimidine photodimerization occurs when UV radiation alters the chemical bonds of two consecutive pyrimidine bases, with two possible outcomes: the formation of the cyclobutene pyrimidine dimer (CPD) if a cycloaddition between the C5-C6 double bond of the pyrimidines occurs, or the formation of pyrimidine (6-4) pyrimidone (64-PP) if  a covalent bond forms between C4 and C6 of the pyrimidines (@MartinezFernandez2022).
+
+We can simulate the dimerization of DNA pyrimidines, a molecular reaction which can lead to skin cancer. Bipyrimidine photodimerization occurs when UV radiation alters the chemical bonds of two consecutive pyrimidine bases, with two possible outcomes: the formation of the cyclobutene pyrimidine dimer (CPD) if a cycloaddition between the C5-C6 double bond of the pyrimidines occurs, or the formation of pyrimidine (6-4) pyrimidone (64-PP) if  a covalent bond forms between C4 and C6 of the pyrimidines (@MartinezFernandez2022).
     
   Therefore, this simulation involves 4 species and 3 reactions channels: pyrimidine monomers Thymine 1 (T1), Thymine 2 (T2), and dimer photoproducts CPD and 64-PP. 
 
