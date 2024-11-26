@@ -98,3 +98,18 @@ ggplot(simulation_long, aes(x = Time, y = value, color = variable)) +
 # Display the first few rows of the simulation data
 knitr::kable(head(simulation), format = "html", caption = "Simulation Results (First Few Rows)")
 ```
+###Observations
+1.**Logarithmic Growth**
+Both CPD and 64-PP formation follow logarithmic growth, as expected under specific UV radiation according to previously reported quantum yields (Martinez-Fernandez and Improta, 2022; Mouret et al., 2006). The number of reactions per unit time plateaus as the pyrimidine pairs decrease, consistent with the propensity functions.
+
+2. **Stochastic Fluctuations**
+Due to the stochastic nature of molecular reactions, this algorithm reflects fluctuations of photodimerization as it models the probabilistic process of each reaction.
+
+3. **Time Steps and Reaction Events**
+
+###Biological Significance
+-**Photodimerization**
+As pyrimidine photodimerization transforms two pyrimidine monomers into a dimer, this simulation has accurately represented the formation of two possible dimers, CPD and 64-PP, from pairs of thymine monomers. 
+-**Real-World Application**
+Dimerization is widely studied, as it can lead to DNA mutations causing skin cancer. 
+This algorithm can be further adjusted to show molecular reactions with various molecular species and reaction channels.
