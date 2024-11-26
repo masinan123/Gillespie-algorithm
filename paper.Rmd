@@ -6,7 +6,6 @@ author:
   - Anna Szydlowski
 date: "`r Sys.Date()`"
 output:
-  pdf_document:
     number_sections: true
     citation_package: biblatex 
 spacing: double
@@ -174,22 +173,29 @@ ggplot(simulation_long, aes(x = Time, y = value, color = variable)) +
 ```
 
 ## Radioactive Decay Simulation
+
 This simulation models the stochastic decay of a single species (\( R \)), which represents a radioactive substance such as radon, radium, or plutonium. The decay process is governed by the following reaction:
+
 \[
 R \xrightarrow{c} 0
 \]
+
 where \( c \) is the decay rate constant that defines the likelihood of decay per unit time.
-The Gillespie algorithm is used to simulate this system, capturing the inherent randomness of radioactive decay events. Unlike deterministic approaches, the Gillespie algorithm tracks individual decay events over time, providing an accurate representation of the stochastic nature of the process.
-The goal of this simulation is to observe the time evolution of the remaining radioactive molecules (\( R \)) and visualize their decay over time.
+
+The Gillespie algorithm is used to simulate this system, capturing the inherent randomness of radioactive decay events. Unlike deterministic approaches, the Gillespie algorithm tracks individual decay events over time, providing an accurate representation of the stochastic nature of the process. The goal of this simulation is to observe the time evolution of the remaining radioactive molecules (\( R \)) and visualize their decay over time.
+
+
 ```{r simulation_2, echo=FALSE, warning=FALSE, message=FALSE}
 # Define parameters
 c <- 0.01  # Decay rate constant
-state <- c(R = 1000)  # Initial radioactive substance
-max_time <- 100  # Maximum simulation time
+state <- c(R = 10000)  # Initial radioactive substance
+max_time <- 1000  # Extended maximum simulation time
+
 # Define propensity function
 propensities <- function(state) {
   c * state["R"]
 }
+
 # Gillespie simulation function
 simulate_gillespie <- function(state, max_time) {
   time <- 0
@@ -214,36 +220,76 @@ simulate_gillespie <- function(state, max_time) {
   
   return(output)
 }
+
 # Run the simulation
 simulation <- simulate_gillespie(state, max_time)
+
 ```
-```{r graph_2, echo=FALSE}
+
+```{r decay-linear, echo=FALSE, warning=FALSE, message=FALSE, fig.cap="Radioactive Decay Simulation in Linear Scale"}
+
+# Load ggplot2 for visualization
 library(ggplot2)
-# Plot results
+
+# Linear-scale plot
 ggplot(simulation, aes(x = Time, y = R)) +
   geom_line(color = "blue") +
   labs(
-    title = "Radioactive Decay Simulation",
     x = "Time",
     y = "Remaining Radioactive Substance (R)"
   ) +
   theme_minimal()
 ```
 
-### Observations
-1. **Exponential Decay**:
-   - The radioactive substance (\( R \)) decays exponentially over time, as expected from the properties of radioactive decay. The number of decay events per unit time decreases as the quantity of \( R \) diminishes.
-   - This behavior is reflected in the propensity function \( a(R) = c \cdot R \), where the decay rate is proportional to the remaining amount of \( R \).
-2. **Stochastic Fluctuations**:
-   - Unlike a smooth deterministic decay curve, the simulation shows small fluctuations in the timing of decay events. These fluctuations arise from the stochastic nature of the Gillespie algorithm, which models each decay event as a probabilistic process.
-3. **Time Steps and Decay Events**:
-   - The time intervals between decay events (\( \Delta t \)) grow longer as the number of \( R \) molecules decreases. This is because the propensity (\( a(R) \)) becomes smaller, leading to larger expected time intervals between events.
 
-### Biological/Physical Significance
-- **Radioactive Half-Life**:
-  - The exponential decay observed in this simulation is consistent with the concept of half-life in radioactive decay. While this model does not explicitly compute the half-life, it demonstrates how the decay rate slows down as the substance depletes.
-- **Real-World Applications**:
-  - Radioactive decay processes are critical in many fields, including nuclear physics, medicine (e.g., radiotherapy), and environmental science (e.g., radon gas monitoring). Understanding stochastic decay helps refine predictions in low-count systems where randomness plays a significant role.
+```{r decay-log, echo=FALSE, warning=FALSE, message=FALSE, fig.cap="Radioactive Decay Simulation in Logarithmic Scale"}
+# Logarithmic-scale plot
+ggplot(simulation, aes(x = Time, y = R)) +
+  geom_line(color = "red") +
+  scale_y_log10() +
+  labs(
+    x = "Time",
+    y = "Remaining Radioactive Substance (log(R))"
+  ) +
+  theme_minimal()
+
+```
+
+### Observations
+
+The simulation results are visualized in two plots. Figure \@ref(fig:decay-linear) shows the decay on a linear scale, while Figure \@ref(fig:decay-log) presents the same data on a logarithmic scale to highlight the exponential nature of the decay process.
+
+#### Exponential Decay
+The radioactive substance (\( R \)) decays exponentially over time, as expected from the properties of radioactive decay. In Figure \@ref(fig-decay-linear), this behavior is reflected in the steep decline in \( R \) during the early stages of the simulation, followed by a more gradual decline as the remaining quantity of \( R \) decreases. This is consistent with the exponential decay law:
+
+\[
+R(t) = R_0 e^{-ct}
+\]
+
+where \( R_0 \) is the initial amount, \( c \) is the decay constant, and \( t \) is time. The propensity function \( a(R) = c \cdot R \) ensures that the decay rate is proportional to the remaining amount of \( R \).
+
+In Figure \@ref(fig-decay-log), the decay trajectory appears as a straight line, which confirms the exponential nature of the process. The slope of this line corresponds to the decay constant \( c \), validating the theoretical prediction.
+
+#### Stochastic Fluctuations
+Unlike deterministic simulations, the stochastic approach introduces minor fluctuations in the timing of individual decay events. These fluctuations are more noticeable when the number of molecules is small, as random variations in the timing of events have a larger relative impact.
+
+#### Time Steps and Decay Events
+As the number of molecules decreases, the propensity \( a(R) \) becomes smaller, leading to larger intervals (\( \Delta t \)) between successive decay events. This dynamic is evident in both figures, where the rate of decline slows significantly in the later stages of the simulation.
+
+### Biological and Physical Significance
+
+#### Radioactive Half-Life
+The exponential decay observed in this simulation aligns with the concept of half-life, the time required for half of the substance to decay. The half-life (\( t_{1/2} \)) can be computed as:
+
+\[
+t_{1/2} = \frac{\ln(2)}{c}
+\]
+
+For \( c = 0.01 \), the half-life is approximately \( t_{1/2} \approx 69.3 \) time units. This simulation demonstrates how the decay rate diminishes over time as the remaining radioactive substance depletes.
+
+#### Real-World Applications
+Radioactive decay is a fundamental process in nuclear physics, medicine, and environmental science. For example, it is critical in radiotherapy for cancer treatment, where the controlled decay of radioactive isotopes delivers targeted doses of radiation. It also has applications in monitoring environmental contaminants such as radon gas, where stochastic decay processes affect detection and measurement accuracy. Understanding the inherent randomness of decay is essential for accurate predictions, especially in low-count systems where stochastic effects dominate.
+
 
 # Conclusion {#sec-conclusion}
 
