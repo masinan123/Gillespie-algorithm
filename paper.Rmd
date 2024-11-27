@@ -126,7 +126,7 @@ T1 + T2 \xrightarrow{c3} T1+T2
 We will simulate the dimerization of thymine using propensity based on the formation yield of CPD (~37 per 10^6 normal bases) and 64-PP (~2 per 10^6 normal bases) found by exposing skin cells to a UVB dose of 0.2 J/cm^2 (@Mouret2006). As the amount of thymine bases in DNA varies from person to person, we will simulate thymine photodimerization of 1000 pairs of thymine.
 
 ```{r simulation_1, echo=FALSE, warning=FALSE, message=FALSE}
-#SLOW COMPUTATION.. FOR FAST COMPUTE SEE LINES 11, 20, 65, & 79 
+#SLOW COMPUTATION.. FOR FAST COMPUTE MAKE ADJUSTMENTS AS NEEDED
 # Load required libraries
 if (!require("reshape2")) install.packages("reshape2")
 if (!require("ggplot2")) install.packages("ggplot2")
