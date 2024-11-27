@@ -362,13 +362,16 @@ While the Gillespie Algorithm excels at modeling stochastic dynamics, it is not 
 
 The implications of this work extend beyond the specific applications discussed. By providing a framework for understanding and simulating stochastic reaction systems, the Gillespie Algorithm continues to play a pivotal role in advancing our knowledge of molecular biology, chemical kinetics, and physical chemistry. Future developments in computational efficiency and hybrid methods may further expand its applicability, enabling the simulation of even more complex systems with greater precision.
 
-
+\newpage
 # References
+<div id="refs"></div>
+\printbibliography[heading=none]
+\def\printbibliography{}
 
 \newpage
 
-# Appendix
-
+\appendix
+\section{Appendix}
 ## R Code for [4.1 Photodimerization Simulation](#sec-Photodimerization)
 
 ```{r a1, echo=TRUE, eval=FALSE, message=FALSE, warning=FALSE, include=TRUE}
