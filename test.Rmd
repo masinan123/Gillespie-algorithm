@@ -1,115 +1,15 @@
-```{r simulation_1, echo=FALSE, warning=FALSE, message=FALSE}
-#SLOW COMPUTATION.. FOR FAST COMPUTE SEE LINES 11, 20, 65, & 79 
-# Load required libraries
-if (!require("reshape2")) install.packages("reshape2")
-if (!require("ggplot2")) install.packages("ggplot2")
-library(reshape2)
-library(ggplot2)
-# Define reaction rates
-c1 <- (37 / 1e6) * 10             # Formation of CPD
-c2 <- (2 / 1e6) * 10              # Formation of 64-PP
-c3 <- (1 - (37 + 2) / 1e6) * 10   # No dimerization occurs// REMOVE THIS LINE FOR FAST COMPUTE
+---
+title: "Test Document"
+output:
+  pdf_document:
+    keep_tex: true
+header-includes:
+  - \usepackage{xcolor}
+  - \usepackage{hyperref}
+  - \hypersetup{colorlinks=true, linkcolor=red, citecolor=green, urlcolor=blue}
+---
 
-# Initial state
-state <- c(T1 = 10000, T2 = 10000, CPD = 0, `64PP` = 0)
-# Define propensity functions
-propensities <- function(state) {
-  c(
-    c1 * state["T1"] * state["T2"], # Reaction 1
-    c2 * state["T1"] * state["T2"],  # Reaction 2
-    c3 * state["T1"] * state["T2"]  #Reaction 3   // REMOVE THIS LINE FOR FAST COMPUTE
-  )
-}
-# Gillespie simulation function
-simulate_gillespie <- function(state, max_time) {
-  # Initialize time and output data frame
-  time <- 0
-  output <- data.frame(
-    Time = numeric(0),
-    T1 = numeric(0),
-    T2 = numeric(0),
-    CPD = numeric(0),
-    `64PP` = numeric(0)
-  )
-  
-  # Record the initial state
-  initial_row <- c(Time = time, state)
-  output <- rbind(output, as.data.frame(t(initial_row), stringsAsFactors = FALSE))
-  
-  while (time < max_time) {
-    # Calculate propensities
-    props <- propensities(state)
-    total_prop <- sum(props)
-    
-    # Stop if no reactions can occur
-    if (total_prop == 0) break
-    
-    # Time to next reaction
-    delta_t <- rexp(1, rate = total_prop)
-    time <- time + delta_t
-    
-    # Select which reaction occurs
-    reaction <- sample(length(props), 1, prob = props)
-    
-    # Update state based on reaction
-    if (reaction == 1) {
-      state["T1"] <- state["T1"] - 1
-      state["T2"] <- state["T2"] - 1
-      state["CPD"] <- state["CPD"] + 1
-    }
-    if (reaction == 2) {
-      state["T1"] <- state["T1"] - 1
-      state["T2"] <- state["T2"] - 1
-      state["64PP"] <- state["64PP"] + 1
-    }
-    if (reaction == 3) {   #REMOVE THIS SECTION FOR QUICK COMPUTE
-      next
-    }
-    
-    # Record the new state
-    new_row <- c(Time = time, state)
-    output <- rbind(output, as.data.frame(t(new_row), stringsAsFactors = FALSE))
-  }
-  
-  # Convert columns to numeric for consistency
-  output[] <- lapply(output, as.numeric)
-  return(output)
-}
-# Run the simulation
-max_time <- 10        #SET TO HIGHER TIME IF DOING FAST COMPUTE
-simulation <- simulate_gillespie(state, max_time)
-```
+This is a test document. See Figure \ref{fig:test}.
 
-```{r graph_1, echo=FALSE, warning=FALSE, message=FALSE}
-# Reshape data for plotting
-simulation_long <- melt(simulation, id.vars = "Time")
-# Plot results
-ggplot(simulation_long, aes(x = Time, y = value, color = variable)) +
-  geom_line() +
-  labs(
-    title = "Dimerization Reaction Set Simulation",
-    x = "Time",
-    y = "Molecule Count",
-    color = "Species"
-  ) +
-  theme_minimal()
-```
-```{r}
-# Display the first few rows of the simulation data
-knitr::kable(head(simulation), format = "html", caption = "Simulation Results (First Few Rows)")
-```
-###Observations
-1.**Logarithmic Growth**
-Both CPD and 64-PP formation follow logarithmic growth, as expected under specific UV radiation according to previously reported quantum yields (Martinez-Fernandez and Improta, 2022; Mouret et al., 2006). The number of reactions per unit time plateaus as the pyrimidine pairs decrease, consistent with the propensity functions.
-
-2. **Stochastic Fluctuations**
-Due to the stochastic nature of molecular reactions, this algorithm reflects fluctuations of photodimerization as it models the probabilistic process of each reaction.
-
-3. **Time Steps and Reaction Events**
-
-###Biological Significance
--**Photodimerization**
-As pyrimidine photodimerization transforms two pyrimidine monomers into a dimer, this simulation has accurately represented the formation of two possible dimers, CPD and 64-PP, from pairs of thymine monomers. 
--**Real-World Application**
-Dimerization is widely studied, as it can lead to DNA mutations causing skin cancer. 
-This algorithm can be further adjusted to show molecular reactions with various molecular species and reaction channels.
+```{r fig-test, echo=FALSE, fig.cap="Test Figure \\label{fig:test}"}
+plot(1:10)
