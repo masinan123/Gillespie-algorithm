@@ -108,7 +108,11 @@ After generating sufficiently many $N_{Traj}$ such trajectories, we can estimate
 The Gillespie algorithm is straightforward and easy to implement. However, it is only an approximate rather than an exact stochastic algorithm. A very large number of trajectories is needed to reach a reasonable accuracy. The complexity of the algorithm is very high and the accuracy is not guaranteed due to randomness. 
 
 # Application {#sec-application}
-## Photodimerization Simulation
+
+This section explores the practical application of the Gillespie Algorithm by simulating two molecular systems. The first simulation, [Photodimerization Simulation](#sec-Photodimerization), models the photodimerization of thymine, a molecular reaction relevant to DNA damage caused by ultraviolet (UV) radiation. The second simulation, [Radioactive Decay Simulation](#sec-Decay), examines the stochastic decay of radioactive isotopes, a fundamental process in nuclear physics. Both simulations references the `GillespieSSA` package (@GillespieSSA), a R implementation of the Gillespie Algorithm that facilitates the generation of statistically accurate trajectories for molecular reaction systems. By consulting this package, we can simulate complex stochastic processes and explore the dynamics of these reaction systems.
+
+
+## Photodimerization Simulation {#sec-Photodimerization}
 We can simulate the dimerization of DNA pyrimidines, a molecular reaction which can lead to skin cancer. Bipyrimidine photodimerization occurs when UV radiation alters the chemical bonds of two consecutive pyrimidine bases, with two possible outcomes: the formation of the cyclobutene pyrimidine dimer (CPD) if a cycloaddition between the C5-C6 double bond of the pyrimidines occurs, or the formation of pyrimidine (6-4) pyrimidone (64-PP) if  a covalent bond forms between C4 and C6 of the pyrimidines (@MartinezFernandez2022).
 
 Therefore, this simulation involves 4 species and 3 reactions channels: pyrimidine monomers Thymine 1 (T1), Thymine 2 (T2), and dimer photoproducts CPD and 64-PP. 
@@ -224,7 +228,7 @@ As pyrimidine photodimerization transforms two pyrimidine monomers into a dimer,
 Dimerization is widely studied, as it can lead to DNA mutations causing skin cancer.The Gillespie  algorithm allows us to realistically model these reactions, as it allows us to demonstrate that our parameters of interest change over time.
 This algorithm can be further adjusted to show molecular reactions with various molecular species and reaction channels, with applications in biology, chemistry, and bioinformatics.
 
-## Radioactive Decay Simulation
+## Radioactive Decay Simulation {#sec-Decay}
 
 This simulation models the stochastic decay of a single species (\( R \)), which represents a radioactive substance such as radon, radium, or plutonium. The decay process is governed by the following reaction:
 
