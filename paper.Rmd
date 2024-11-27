@@ -253,7 +253,7 @@ The radioactive decay of \( R \) follows the well-known exponential decay law:
 R(t) = R_0 e^{-ct}
 \]
 
-where \( R_0 \) is the initial quantity of the substance, \( c \) is the decay constant, and \( t \) is time. As \( R \) decreases, the propensity function \( a(R) = c \cdot R \) ensures that the decay rate becomes slower over time. This results in a high number of decay events at the beginning of the simulation, which gradually diminishes as fewer molecules remain.
+where \( R_0 \) is the initial quantity of the substance, \( c \) is the decay constant, and \( t \) is time (@Henriksen2002). As \( R \) decreases, the propensity function \( a(R) = c \cdot R \) ensures that the decay rate becomes slower over time. This results in a high number of decay events at the beginning of the simulation, which gradually diminishes as fewer molecules remain.
 
 While the decay trajectory conforms to deterministic exponential decay theory, the Gillespie algorithm introduces stochastic variations. These arise because the time between successive reactions is governed by random exponential waiting times, and the occurrence of each reaction is probabilistic. As the number of \( R \) molecules declines, stochastic fluctuations become more apparent due to the reduced scale of the system.
 
@@ -341,7 +341,7 @@ ggplot(simulation, aes(x = Time, y = R)) +
 ### Biological and Physical Significance
 
 #### Radioactive Half-Life
-The exponential decay observed in the simulation aligns with the concept of half-life, a critical measure in the study of radioactive processes. The half-life (\( t_{1/2} \)) is defined as the time required for half of the radioactive substance to decay. It can be calculated as:
+The exponential decay observed in the simulation aligns with the concept of half-life, a critical measure in the study of radioactive processes. The half-life (\( t_{1/2} \)) is defined as the time required for half of the radioactive substance to decay (@Henriksen2002). It can be calculated as:
 
 \[
 t_{1/2} = \frac{\ln(2)}{c}
