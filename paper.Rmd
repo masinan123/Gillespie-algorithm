@@ -28,9 +28,8 @@ editor_options:
   markdown: 
     wrap: 72
 ---
-
-\newpage 
-\tableofcontents 
+\newpage
+\tableofcontents
 \newpage
 
 ```{r setup, include=FALSE}
@@ -67,21 +66,21 @@ The equation governing the evolution of $P(S,t)$ is called the master equation. 
 
 2. The particles in other state $S'$ enter the state $S$ state due to some reaction $S'\rightarrow S$.
 
-Combining the two factors, we obtain the master equation with the form $^{[1]}$ $$\frac{\partial}{\partial t}P(S,t)=\sum_{S'}P(S',t)R(S',S)-\sum_{S'}P(S,t)R(S,S')$$, where $R(S,S')$ represents the reaction rate from the state $S$ to the state $S'$.
+Combining the two factors, we obtain the master equation with the form (@vanKampen1992) $$\frac{\partial}{\partial t}P(S,t)=\sum_{S'}P(S',t)R(S',S)-\sum_{S'}P(S,t)R(S,S')$$ where $R(S,S')$ represents the reaction rate from the state $S$ to the state $S'$.
 
 The idea of master equation is inherently stochastic. Firstly $P(S,t)$ itself is a probabilistic description of the system. Next, in most of the cases, the reaction/process is stochastic. Therefore the master equation describes the ensemble average of all possible systems, here `ensemble` is the collection of all possible states with the same initial condition and macroscopic parameters. Following some certain initial distribution, we are not guaranteed to reach the same distribution at time $t$.
 
-In the article `Cellular growth and division in the Gillespie algorithm` $^{[2]}$, the authors discussed the system of well-stirred mixture of $N$ chemical species. Since the system is well-stirred, the distribution of particles is always uniform in space. The state of the system can be described using a N-vector $Y=(X_1,...,X_N)$, where $X_i$ is the number of molecules of type $i$ in the system. Assume there are $\mu=1,...,M$ elementary reaction channels $R_{\mu}$. Let $c_{\mu}$ be the reaction rate, i.e., the probability that a random combination of molecules from channel $R_{\mu}$ selected at the moment $t$ react in the interval $[t,t+dt)$ with probability $c_{\mu}dt+o(dt)$. Let $h_{\mu}(Y)$ be the total number of possible distinct combinations of molecules for a channel $R_{\mu}$ when the system is in state $Y$, and $\alpha_{\mu}=(\alpha_{1,\mu},...,\alpha_{N,\mu})$ is a constant stoichiometric vector prescribing the change in the state of the system after the reaction $R_{\mu}$ has occurred.
+In the article `Cellular growth and division in the Gillespie algorithm` (@Lu2004), the authors discussed the system of well-stirred mixture of $N$ chemical species. Since the system is well-stirred, the distribution of particles is always uniform in space. The state of the system can be described using a N-vector $Y=(X_1,...,X_N)$, where $X_i$ is the number of molecules of type $i$ in the system. Assume there are $\mu=1,...,M$ elementary reaction channels $R_{\mu}$. Let $c_{\mu}$ be the reaction rate, i.e., the probability that a random combination of molecules from channel $R_{\mu}$ selected at the moment $t$ react in the interval $[t,t+dt)$ with probability $c_{\mu}dt+o(dt)$. Let $h_{\mu}(Y)$ be the total number of possible distinct combinations of molecules for a channel $R_{\mu}$ when the system is in state $Y$, and $\alpha_{\mu}=(\alpha_{1,\mu},...,\alpha_{N,\mu})$ is a constant stoichiometric vector prescribing the change in the state of the system after the reaction $R_{\mu}$ has occurred.
 
-For example, in a second order reaction $A+B\rightarrow AB$, we have $$\frac{d}{dt}X_{AB}=V\frac{d}{dt}[AB]=V*c'[A][B]=\frac{c'}{V}*X_AX_B=c*h(Y)$$, where $c'$ is the true reaction constant measured in chemistry, $V$ is the volume of the system and $[i]=\frac{X_i}{V}$ is the number concentration of species $i$.
+For example, in a second order reaction $A+B\rightarrow AB$, we have $$\frac{d}{dt}X_{AB}=V\frac{d}{dt}[AB]=V*c'[A][B]=\frac{c'}{V}*X_AX_B=c*h(Y)$$ where $c'$ is the true reaction constant measured in chemistry, $V$ is the volume of the system and $[i]=\frac{X_i}{V}$ is the number concentration of species $i$.
 
-With the above setting-up, The master equation for this system becomes $$\frac{\partial}{\partial t}P(Y,t|Y_0,t_0)=\sum_{\mu=1}^M c_{\mu}h_{\mu}(Y-\alpha_{\mu})P(Y-\alpha_{\mu},t|Y_0,t_0)-\sum_{\mu=1}^M c_{\mu}h_{\mu}(Y)P(Y,t|Y_0,t_0)$$, here $P(Y,t|Y_0,t_0)$ is the probability of the system being in state $Y$ at time $t$ given it is in state $Y_0$ at time $t_0$.
+With the above setting-up, The master equation for this system becomes $$\frac{\partial}{\partial t}P(Y,t|Y_0,t_0)=\sum_{\mu=1}^M c_{\mu}h_{\mu}(Y-\alpha_{\mu})P(Y-\alpha_{\mu},t|Y_0,t_0)-\sum_{\mu=1}^M c_{\mu}h_{\mu}(Y)P(Y,t|Y_0,t_0)$$ here $P(Y,t|Y_0,t_0)$ is the probability of the system being in state $Y$ at time $t$ given it is in state $Y_0$ at time $t_0$.
 
 ## Gillespie Algorithm
 
 The master equation is a coupled linear ordinary equation for $|S_Y|$ dependent variables $P(Y,t|Y_0,t_0)$, where $|S_Y|$ is the size of the state space. For a system with $n$ particles, $|S_Y|$ is of order $O(n^N)$. Therefore it is almost impossible to solve the equation analytically, especially when the number of possible elementary reactions $M$ is large.
 
-A practical alternative to solve the master equation is the stochastic simulation approach devised by Gillespie $^{[3]}$. Using the idea that $P(Y,t|Y_0,t_0)$ describes the ensemble average of all possible micro-states given initial state $Y_0$ at time $t_0$, the Gillespie algorithm generates an ensemble of sample trajectories of the system with statistics which asymptotically converges to the solution of the corresponding Master Equation. 
+A practical alternative to solve the master equation is the stochastic simulation approach devised by Gillespie (@Gillespie1977). Using the idea that $P(Y,t|Y_0,t_0)$ describes the ensemble average of all possible micro-states given initial state $Y_0$ at time $t_0$, the Gillespie algorithm generates an ensemble of sample trajectories of the system with statistics which asymptotically converges to the solution of the corresponding Master Equation. 
 
 In the Gillespie algorithm, we update the state of the system by determining 
 
@@ -119,14 +118,10 @@ T1 + T2 \xrightarrow{c1} CPD
 \[
 T1 + T2 \xrightarrow{c2} 64PP
 \]
-\[
-T1 + T2 \xrightarrow{c3} T1+T2
-\]
 
 We will simulate the dimerization of thymine using propensity based on the formation yield of CPD (~37 per 10^6 normal bases) and 64-PP (~2 per 10^6 normal bases) found by exposing skin cells to a UVB dose of 0.2 J/cm^2 (@Mouret2006). As the amount of thymine bases in DNA varies from person to person, we will simulate thymine photodimerization of 1000 pairs of thymine.
 
 ```{r simulation_1, echo=FALSE, warning=FALSE, message=FALSE}
-#SLOW COMPUTATION.. FOR FAST COMPUTE MAKE ADJUSTMENTS AS NEEDED
 # Load required libraries
 if (!require("reshape2")) install.packages("reshape2")
 if (!require("ggplot2")) install.packages("ggplot2")
@@ -135,16 +130,13 @@ library(ggplot2)
 # Define reaction rates
 c1 <- (37 / 1e6) * 10             # Formation of CPD
 c2 <- (2 / 1e6) * 10              # Formation of 64-PP
-c3 <- (1 - (37 + 2) / 1e6) * 10   # No dimerization occurs// REMOVE THIS LINE FOR FAST COMPUTE
-
 # Initial state
 state <- c(T1 = 10000, T2 = 10000, CPD = 0, `64PP` = 0)
 # Define propensity functions
 propensities <- function(state) {
   c(
     c1 * state["T1"] * state["T2"], # Reaction 1
-    c2 * state["T1"] * state["T2"],  # Reaction 2
-    c3 * state["T1"] * state["T2"]  #Reaction 3   // REMOVE THIS LINE FOR FAST COMPUTE
+    c2 * state["T1"] * state["T2"]  # Reaction 2
   )
 }
 # Gillespie simulation function
@@ -189,9 +181,6 @@ simulate_gillespie <- function(state, max_time) {
       state["T2"] <- state["T2"] - 1
       state["64PP"] <- state["64PP"] + 1
     }
-    if (reaction == 3) {   #REMOVE THIS SECTION FOR QUICK COMPUTE
-      next
-    }
     
     # Record the new state
     new_row <- c(Time = time, state)
@@ -203,11 +192,12 @@ simulate_gillespie <- function(state, max_time) {
   return(output)
 }
 # Run the simulation
-max_time <- 10        #SET TO HIGHER TIME IF DOING FAST COMPUTE
+max_time <- 100
 simulation <- simulate_gillespie(state, max_time)
 ```
 
-```{r graph_1, echo=FALSE, warning=FALSE, message=FALSE}
+
+```{r fig-dimerization-sim, echo=FALSE, warning=FALSE, message=FALSE, fig.cap="Thymine Photodimerization Simulation"}
 # Reshape data for plotting
 simulation_long <- melt(simulation, id.vars = "Time")
 # Plot results
@@ -221,14 +211,16 @@ ggplot(simulation_long, aes(x = Time, y = value, color = variable)) +
   ) +
   theme_minimal()
 ```
-###Observations
-Both CPD and 64-PP formation follow logarithmic growth, as expected under specific UV radiation according to previously reported quantum yields (Martinez-Fernandez and Improta, 2022; Mouret et al., 2006). The number of reactions per unit time plateaus as the pyrimidine pairs decrease, consistent with the propensity functions.
+
+### Observations
+
+Both CPD and 64-PP formation follow logarithmic growth, as expected under specific UV radiation according to previously reported quantum yields (@MartinezFernandez2022; @Mouret2006). The number of reactions per unit time plateaus as the pyrimidine pairs decrease, consistent with the propensity functions.
 Due to the stochastic nature of molecular reactions, this algorithm reflects fluctuations of photodimerization as it models the probabilistic process of each reaction.
 
-###Biological Significance
--**Dimerization**
+### Biological Significance
+- **Dimerization**
 As pyrimidine photodimerization transforms two pyrimidine monomers into a dimer, this simulation has accurately represented the formation of two possible dimers, CPD and 64-PP, from pairs of thymine monomers. Dimerization is also known to occur between pairs of cytosine, as well as between thymine and cytosine, with varying rates based on the monomers involved as well as the level of UV radiation (@Mouret2006).
--**Real-World Application**
+- **Real-World Application**
 Dimerization is widely studied, as it can lead to DNA mutations causing skin cancer.The Gillespie  algorithm allows us to realistically model these reactions, as it allows us to demonstrate that our parameters of interest change over time.
 This algorithm can be further adjusted to show molecular reactions with various molecular species and reaction channels, with applications in biology, chemistry, and bioinformatics.
 
@@ -306,7 +298,7 @@ Figure \@ref(fig-decay-linear) illustrates the exponential decay of \( R \) over
 
 The gradual flattening of the curve also underscores the diminishing probability of decay events as time progresses. This effect is a direct result of the propensity function \( a(R) = c \cdot R \), which decreases linearly with \( R \). The linear-scale plot effectively illustrates the overall trend of radioactive decay over time, making it particularly suitable for understanding the macroscopic behavior of the process.
 
-```{r decay-linear, echo=FALSE, warning=FALSE, message=FALSE, fig.cap="Radioactive Decay Simulation in Linear Scale"}
+```{r fig-decay-linear, echo=FALSE, warning=FALSE, message=FALSE, fig.cap="Radioactive Decay Simulation in Linear Scale"}
 
 # Load ggplot2 for visualization
 library(ggplot2)
@@ -327,7 +319,7 @@ Figure \@ref(fig-decay-log) depicts the same decay trajectory on a logarithmic s
 
 The logarithmic representation also highlights deviations from perfect linearity, which become more noticeable as the molecule count approaches zero. These deviations are the result of stochastic fluctuations inherent in the Gillespie algorithm, particularly in the later stages when \( R \) is low, and individual decay events have a greater impact on the overall trend. This logarithmic plot is especially useful for analyzing the detailed kinetics of the decay process and for confirming the exponential nature of the decay.
 
-```{r decay-log, echo=FALSE, warning=FALSE, message=FALSE, fig.cap="Radioactive Decay Simulation in Logarithmic Scale"}
+```{r fig-decay-log, echo=FALSE, warning=FALSE, message=FALSE, fig.cap="Radioactive Decay Simulation in Logarithmic Scale"}
 # Logarithmic-scale plot
 ggplot(simulation, aes(x = Time, y = R)) +
   geom_line(color = "red") +
@@ -369,11 +361,3 @@ The implications of this work extend beyond the specific applications discussed.
 
 
 # References
-
-[1]. N. G. V. Kampen, Stochastic Processes in Physics and Chemistry. North-Holland, Amsterdam, 1992.
-
-[2]. T. Lu, D. Volfson, L. Tsimring, J. Hasty, Cellular growth and division in the Gillespie algorithm, Syst Biol (Stevenage). 2004 Jun;1(1):121-8
-
-
-[3]. D. T. Gillespie, “Exact stochastic simulation of coupled chemical reactions,” J. Phys. Chem., vol. 81, no. 25, pp. 2340–2361,
-1977.
