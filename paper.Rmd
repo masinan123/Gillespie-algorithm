@@ -115,7 +115,7 @@ This section explores the practical application of the Gillespie Algorithm by si
 ## Photodimerization Simulation {#sec-Photodimerization}
 We can simulate the dimerization of DNA pyrimidines, a molecular reaction which can lead to skin cancer. Bipyrimidine photodimerization occurs when UV radiation alters the chemical bonds of two consecutive pyrimidine bases, with two possible outcomes: the formation of the cyclobutene pyrimidine dimer (CPD) if a cycloaddition between the C5-C6 double bond of the pyrimidines occurs, or the formation of pyrimidine (6-4) pyrimidone (64-PP) if  a covalent bond forms between C4 and C6 of the pyrimidines (@MartinezFernandez2022).
 
-Therefore, this simulation involves 4 species and 3 reactions channels: pyrimidine monomers Thymine 1 (T1), Thymine 2 (T2), and dimer photoproducts CPD and 64-PP. 
+Therefore, this simulation involves four species: pyrimidine monomers Thymine 1 (\( T1 \)), Thymine 2 (\( T2 \)), and dimer photoproducts \( CPD \) and \( 64PP \); and two reactions channels: \( c1 \) and \( c2 \).
 \[
 T1 + T2 \xrightarrow{c1} CPD
 \]
@@ -201,7 +201,7 @@ simulation <- simulate_gillespie(state, max_time)
 ```
 
 
-```{r fig-dimerization-sim, echo=FALSE, warning=FALSE, message=FALSE, fig.cap="Thymine Photodimerization Reaction Set Simulation \\label{fig:dimerization-sim}"}
+```{r fig-dimerization-sim, echo=FALSE, warning=FALSE, message=FALSE, fig.cap="Thymine Photodimerization Reaction Set Simulation \\label{fig:dimerization}"}
 # Reshape data for plotting
 simulation_long <- melt(simulation, id.vars = "Time")
 # Plot results
@@ -217,15 +217,18 @@ ggplot(simulation_long, aes(x = Time, y = value, color = variable)) +
 
 ### Observations
 
-Both CPD and 64-PP formation follow logarithmic growth, as expected under specific UV radiation according to previously reported quantum yields (@MartinezFernandez2022; @Mouret2006). The number of reactions per unit time plateaus as the pyrimidine pairs decrease, consistent with the propensity functions.
-Due to the stochastic nature of molecular reactions, this algorithm reflects fluctuations of photodimerization as it models the probabilistic process of each reaction (Figure \ref{fig:dimerization-sim}).
+As shown in Figure \ref{fig:dimerization}, both CPD and 64-PP formation follow logarithmic growth, as expected under specific UV radiation according to previously reported quantum yields (@MartinezFernandez2022; @Mouret2006). The number of reactions per unit time plateaus as the pyrimidine pairs decrease, consistent with the propensity functions.
+Due to the stochastic nature of molecular reactions, this algorithm reflects fluctuations of photodimerization as it models the probabilistic process of each reaction.
 
-### Biological Significance
-- **Dimerization**
+### Biological and Physical Significance
+
+#### Dimerization
+
 As pyrimidine photodimerization transforms two pyrimidine monomers into a dimer, this simulation has accurately represented the formation of two possible dimers, CPD and 64-PP, from pairs of thymine monomers. Dimerization is also known to occur between pairs of cytosine, as well as between thymine and cytosine, with varying rates based on the monomers involved as well as the level of UV radiation (@Mouret2006).
-- **Real-World Application**
-Dimerization is widely studied, as it can lead to DNA mutations causing skin cancer.The Gillespie  algorithm allows us to realistically model these reactions, as it allows us to demonstrate that our parameters of interest change over time.
-This algorithm can be further adjusted to show molecular reactions with various molecular species and reaction channels, with applications in biology, chemistry, and bioinformatics.
+
+#### Implications and Real-World Applications
+Dimerization is widely studied, as it can lead to DNA mutations causing skin cancer.The Gillespie  algorithm allows us to realistically model these reactions, as it allows us to demonstrate that our parameters of interest change over time, rather than following a general logarithmic curve.This algorithm can be further adjusted to show molecular reactions with various molecular species and reaction channels. 
+Using the Gillespie algorithm to model molecular reactions, such as the dimerization of thymine shown in this simulation, has wide-ranging implications in fields such as genetics, cancer research, pharmacology, environmental science, and biotechnology. By capturing the inherent randomness in molecular processes, this approach can provide valuable insights into complex biological systems, enabling better prediction of outcomes in disease development, therapy, and environmental impact studies.
 
 ## Radioactive Decay Simulation {#sec-Decay}
 
