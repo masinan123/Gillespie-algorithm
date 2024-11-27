@@ -364,3 +364,161 @@ The implications of this work extend beyond the specific applications discussed.
 
 
 # References
+
+\newpage
+
+# Appendix
+
+## R Code for [4.1 Photodimerization Simulation](#sec-Photodimerization)
+
+```{r a1, echo=TRUE, eval=FALSE, message=FALSE, warning=FALSE, include=TRUE}
+# Load required libraries
+if (!require("reshape2")) install.packages("reshape2")
+if (!require("ggplot2")) install.packages("ggplot2")
+library(reshape2)
+library(ggplot2)
+# Define reaction rates
+c1 <- (37 / 1e6) * 10             # Formation of CPD
+c2 <- (2 / 1e6) * 10              # Formation of 64-PP
+# Initial state
+state <- c(T1 = 10000, T2 = 10000, CPD = 0, `64PP` = 0)
+# Define propensity functions
+propensities <- function(state) {
+  c(
+    c1 * state["T1"] * state["T2"], # Reaction 1
+    c2 * state["T1"] * state["T2"]  # Reaction 2
+  )
+}
+# Gillespie simulation function
+simulate_gillespie <- function(state, max_time) {
+  # Initialize time and output data frame
+  time <- 0
+  output <- data.frame(
+    Time = numeric(0),
+    T1 = numeric(0),
+    T2 = numeric(0),
+    CPD = numeric(0),
+    `64PP` = numeric(0)
+  )
+  
+  # Record the initial state
+  initial_row <- c(Time = time, state)
+  output <- rbind(output, as.data.frame(t(initial_row), stringsAsFactors = FALSE))
+  
+  while (time < max_time) {
+    # Calculate propensities
+    props <- propensities(state)
+    total_prop <- sum(props)
+    
+    # Stop if no reactions can occur
+    if (total_prop == 0) break
+    
+    # Time to next reaction
+    delta_t <- rexp(1, rate = total_prop)
+    time <- time + delta_t
+    
+    # Select which reaction occurs
+    reaction <- sample(length(props), 1, prob = props)
+    
+    # Update state based on reaction
+    if (reaction == 1) {
+      state["T1"] <- state["T1"] - 1
+      state["T2"] <- state["T2"] - 1
+      state["CPD"] <- state["CPD"] + 1
+    }
+    if (reaction == 2) {
+      state["T1"] <- state["T1"] - 1
+      state["T2"] <- state["T2"] - 1
+      state["64PP"] <- state["64PP"] + 1
+    }
+    
+    # Record the new state
+    new_row <- c(Time = time, state)
+    output <- rbind(output, as.data.frame(t(new_row), stringsAsFactors = FALSE))
+  }
+  
+  # Convert columns to numeric for consistency
+  output[] <- lapply(output, as.numeric)
+  return(output)
+}
+# Run the simulation
+max_time <- 100
+simulation <- simulate_gillespie(state, max_time)
+
+# Reshape data for plotting
+simulation_long <- melt(simulation, id.vars = "Time")
+# Plot results
+ggplot(simulation_long, aes(x = Time, y = value, color = variable)) +
+  geom_line() +
+  labs(
+    x = "Time",
+    y = "Molecule Count",
+    color = "Species"
+  ) +
+  theme_minimal()
+```
+
+## R code for [4.2 Radioactive Decay Simulation](#sec-Decay)
+```{r a2, echo=TRUE, eval=FALSE, message=FALSE, warning=FALSE, include=TRUE}
+# Define parameters
+c <- 0.01  # Decay rate constant
+state <- c(R = 10000)  # Initial radioactive substance
+max_time <- 1000  # Extended maximum simulation time
+
+# Define propensity function
+propensities <- function(state) {
+  c * state["R"]
+}
+
+# Gillespie simulation function
+simulate_gillespie <- function(state, max_time) {
+  time <- 0
+  output <- data.frame(Time = numeric(0), R = numeric(0))
+  output <- rbind(output, data.frame(Time = time, R = state["R"]))
+  
+  while (time < max_time) {
+    # Calculate propensity
+    prop <- propensities(state)
+    if (prop == 0) break  # Stop if no reactions can occur
+    
+    # Time to next reaction
+    delta_t <- rexp(1, rate = prop)
+    time <- time + delta_t
+    
+    # Update state (decay reaction)
+    state["R"] <- state["R"] - 1
+    
+    # Record the state
+    output <- rbind(output, data.frame(Time = time, R = state["R"]))
+  }
+  
+  return(output)
+}
+
+# Run the simulation
+simulation <- simulate_gillespie(state, max_time)
+
+
+# Load ggplot2 for visualization
+library(ggplot2)
+
+# Linear-scale plot
+ggplot(simulation, aes(x = Time, y = R)) +
+  geom_line(color = "blue") +
+  labs(
+    x = "Time",
+    y = "Remaining Radioactive Substance (R)"
+  ) +
+  theme_minimal()
+
+# Logarithmic-scale plot
+ggplot(simulation, aes(x = Time, y = R)) +
+  geom_line(color = "red") +
+  scale_y_log10() +
+  labs(
+    x = "Time",
+    y = "Remaining Radioactive Substance (log(R))"
+  ) +
+  theme_minimal()
+
+```
