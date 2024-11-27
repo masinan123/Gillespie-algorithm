@@ -113,27 +113,38 @@ The Gillespie algorithm is straightforward and easy to implement. However, it is
 We can simulate the dimerization of DNA pyrimidines, a molecular reaction which can lead to skin cancer. Bipyrimidine photodimerization occurs when UV radiation alters the chemical bonds of two consecutive pyrimidine bases, with two possible outcomes: the formation of the cyclobutene pyrimidine dimer (CPD) if a cycloaddition between the C5-C6 double bond of the pyrimidines occurs, or the formation of pyrimidine (6-4) pyrimidone (64-PP) if  a covalent bond forms between C4 and C6 of the pyrimidines (@MartinezFernandez2022).
 
 Therefore, this simulation involves 4 species and 3 reactions channels: pyrimidine monomers Thymine 1 (T1), Thymine 2 (T2), and dimer photoproducts CPD and 64-PP. 
+\[
+T1 + T2 \xrightarrow{c1} CPD
+\]
+\[
+T1 + T2 \xrightarrow{c2} 64PP
+\]
+\[
+T1 + T2 \xrightarrow{c3} T1+T2
+\]
 
 We will simulate the dimerization of thymine using propensity based on the formation yield of CPD (~37 per 10^6 normal bases) and 64-PP (~2 per 10^6 normal bases) found by exposing skin cells to a UVB dose of 0.2 J/cm^2 (@Mouret2006). As the amount of thymine bases in DNA varies from person to person, we will simulate thymine photodimerization of 1000 pairs of thymine.
 
 ```{r simulation_1, echo=FALSE, warning=FALSE, message=FALSE}
+#SLOW COMPUTATION.. FOR FAST COMPUTE SEE LINES 11, 20, 65, & 79 
 # Load required libraries
 if (!require("reshape2")) install.packages("reshape2")
 if (!require("ggplot2")) install.packages("ggplot2")
 library(reshape2)
 library(ggplot2)
 # Define reaction rates
-c1 <- (1 - (37 + 2) / 1e6) * 10   # No dimerization occurs
-c2 <- (37 / 1e6) * 10             # Formation of CPD
-c3 <- (2 / 1e6) * 10              # Formation of 64-PP
+c1 <- (37 / 1e6) * 10             # Formation of CPD
+c2 <- (2 / 1e6) * 10              # Formation of 64-PP
+c3 <- (1 - (37 + 2) / 1e6) * 10   # No dimerization occurs// REMOVE THIS LINE FOR FAST COMPUTE
+
 # Initial state
 state <- c(T1 = 10000, T2 = 10000, CPD = 0, `64PP` = 0)
 # Define propensity functions
 propensities <- function(state) {
   c(
-    c1 * state["T2"],               # Reaction 1
-    c2 * state["T1"] * state["T2"], # Reaction 2
-    c3 * state["T2"]                # Reaction 3
+    c1 * state["T1"] * state["T2"], # Reaction 1
+    c2 * state["T1"] * state["T2"],  # Reaction 2
+    c3 * state["T1"] * state["T2"]  #Reaction 3   // REMOVE THIS LINE FOR FAST COMPUTE
   )
 }
 # Gillespie simulation function
@@ -168,15 +179,18 @@ simulate_gillespie <- function(state, max_time) {
     reaction <- sample(length(props), 1, prob = props)
     
     # Update state based on reaction
-    if (reaction == 1) state["T2"] <- state["T2"] - 1
-    if (reaction == 2) {
+    if (reaction == 1) {
       state["T1"] <- state["T1"] - 1
       state["T2"] <- state["T2"] - 1
       state["CPD"] <- state["CPD"] + 1
     }
-    if (reaction == 3) {
+    if (reaction == 2) {
+      state["T1"] <- state["T1"] - 1
       state["T2"] <- state["T2"] - 1
       state["64PP"] <- state["64PP"] + 1
+    }
+    if (reaction == 3) {   #REMOVE THIS SECTION FOR QUICK COMPUTE
+      next
     }
     
     # Record the new state
@@ -189,7 +203,7 @@ simulate_gillespie <- function(state, max_time) {
   return(output)
 }
 # Run the simulation
-max_time <- 100
+max_time <- 10        #SET TO HIGHER TIME IF DOING FAST COMPUTE
 simulation <- simulate_gillespie(state, max_time)
 ```
 
@@ -200,13 +214,23 @@ simulation_long <- melt(simulation, id.vars = "Time")
 ggplot(simulation_long, aes(x = Time, y = value, color = variable)) +
   geom_line() +
   labs(
-    title = "Decay-Dimerization Reaction Set Simulation",
+    title = "Dimerization Reaction Set Simulation",
     x = "Time",
     y = "Molecule Count",
     color = "Species"
   ) +
   theme_minimal()
 ```
+###Observations
+Both CPD and 64-PP formation follow logarithmic growth, as expected under specific UV radiation according to previously reported quantum yields (Martinez-Fernandez and Improta, 2022; Mouret et al., 2006). The number of reactions per unit time plateaus as the pyrimidine pairs decrease, consistent with the propensity functions.
+Due to the stochastic nature of molecular reactions, this algorithm reflects fluctuations of photodimerization as it models the probabilistic process of each reaction.
+
+###Biological Significance
+-**Dimerization**
+As pyrimidine photodimerization transforms two pyrimidine monomers into a dimer, this simulation has accurately represented the formation of two possible dimers, CPD and 64-PP, from pairs of thymine monomers. Dimerization is also known to occur between pairs of cytosine, as well as between thymine and cytosine, with varying rates based on the monomers involved as well as the level of UV radiation (@Mouret2006).
+-**Real-World Application**
+Dimerization is widely studied, as it can lead to DNA mutations causing skin cancer.The Gillespie  algorithm allows us to realistically model these reactions, as it allows us to demonstrate that our parameters of interest change over time.
+This algorithm can be further adjusted to show molecular reactions with various molecular species and reaction channels, with applications in biology, chemistry, and bioinformatics.
 
 ## Radioactive Decay Simulation
 
