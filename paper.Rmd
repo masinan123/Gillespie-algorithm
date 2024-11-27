@@ -40,6 +40,67 @@ The Gillespie Algorithm was presented in 1976 by Daniel T. Gillespie (@Gillespie
 In the following report, we will review basic concepts of the Gillespie Algorithm [Topic Review section](#sec-Topic-Review), then we will present the theory of the Gillespie Algorithm [Theory section](#sec-theory). Afterwards, we will demonstrate a stochastic simulation using the Gillespie algorithm of a dimerization reaction set [APplication section](#sec-application), using R(@citeR). Finally, we will provide our concluding remarks [Conclusion section](#sec-conclusion).
 
 
+## background
+In this report we studied the original version of the Gillespie algorithm.The Gillespie algorithm generates a statistically correct trajectory to simulate chemical or biochemical systems of reactions efficiently . It allows us to model dynamics that can’t be solved by the master equation analytically, especially for complicated examples.
+
+
+
+## introduction
+Biochemical reactions in cells are inherently stochastic :reactions can occur at any moment, and at any given time, the state of the system determines the probability of a particular chemical reaction occurring next. This is due to the random thermal motion of molecules and the small numbers of reactant molecules involved. When molecule counts are low (often dozens or hundreds rather than millions), random fluctuations in molecule collisions and interactions become significant, making the timing and order of reactions probabilistic rather than deterministic.
+
+## theory
+## Master Equation
+
+Generally we use the distribution function $P(S,t)$ to describe a many particle system at time t, where $P(S,t)$ is the probability for the system to be in the state $S$ at time $t$. 
+
+The equation governing the evolution of $P(S,t)$ is called the master equation. During the time interval $[t,t+dt)$, $P(S,t)$ is changed due to two types of process:
+
+1. The particles in the state $S$ leave due to some reaction $S\rightarrow S'$.
+
+2. The particles in other state $S'$ enter the state $S$ state due to some reaction $S'\rightarrow S$.
+
+Combining the two factors, we obtain the master equation with the form $^{[1]}$ $$\frac{\partial}{\partial t}P(S,t)=\sum_{S'}P(S',t)R(S',S)-\sum_{S'}P(S,t)R(S,S')$$, where $R(S,S')$ represents the reaction rate from the state $S$ to the state $S'$.
+
+The idea of master equation is inherently stochastic. Firstly $P(S,t)$ itself is a probabilistic description of the system. Next, in most of the cases, the reaction/process is stochastic. Therefore the master equation describes the ensemble average of all possible systems, here `ensemble` is the collection of all possible states with the same initial condition and macroscopic parameters. Following some certain initial distribution, we are not guaranteed to reach the same distribution at time $t$.
+
+In the article `Cellular growth and division in the Gillespie algorithm` $^{[2]}$, the authors discussed the system of well-stirred mixture of $N$ chemical species. Since the system is well-stirred, the distribution of particles is always uniform in space. The state of the system can be described using a N-vector $Y=(X_1,...,X_N)$, where $X_i$ is the number of molecules of type $i$ in the system. Assume there are $\mu=1,...,M$ elementary reaction channels $R_{\mu}$. Let $c_{\mu}$ be the reaction rate, i.e., the probability that a random combination of molecules from channel $R_{\mu}$ selected at the moment $t$ react in the interval $[t,t+dt)$ with probability $c_{\mu}dt+o(dt)$. Let $h_{\mu}(Y)$ be the total number of possible distinct combinations of molecules for a channel $R_{\mu}$ when the system is in state $Y$, and $\alpha_{\mu}=(\alpha_{1,\mu},...,\alpha_{N,\mu})$ is a constant stoichiometric vector prescribing the change in the state of the system after the reaction $R_{\mu}$ has occurred.
+
+For example, in a second order reaction $A+B\rightarrow AB$, we have $$\frac{d}{dt}X_{AB}=V\frac{d}{dt}[AB]=V*c'[A][B]=\frac{c'}{V}*X_AX_B=c*h(Y)$$, where $c'$ is the true reaction constant measured in chemistry, $V$ is the volume of the system and $[i]=\frac{X_i}{V}$ is the number concentration of species $i$.
+
+With the above setting-up, The master equation for this system becomes $$\frac{\partial}{\partial t}P(Y,t|Y_0,t_0)=\sum_{\mu=1}^M c_{\mu}h_{\mu}(Y-\alpha_{\mu})P(Y-\alpha_{\mu},t|Y_0,t_0)-\sum_{\mu=1}^M c_{\mu}h_{\mu}(Y)P(Y,t|Y_0,t_0)$$, here $P(Y,t|Y_0,t_0)$ is the probability of the system being in state $Y$ at time $t$ given it is in state $Y_0$ at time $t_0$.
+
+## Gillespie Algorithm
+
+The master equation is a coupled linear ordinary equation for $|S_Y|$ dependent variables $P(Y,t|Y_0,t_0)$, where $|S_Y|$ is the size of the state space. For a system with $n$ particles, $|S_Y|$ is of order $O(n^N)$. Therefore it is almost impossible to solve the equation analytically, especially when the number of possible elementary reactions $M$ is large.
+
+A practical alternative to solve the master equation is the stochastic simulation approach devised by Gillespie $^{[3]}$. Using the idea that $P(Y,t|Y_0,t_0)$ describes the ensemble average of all possible micro-states given initial state $Y_0$ at time $t_0$, the Gillespie algorithm generates an ensemble of sample trajectories of the system with statistics which asymptotically converges to the solution of the corresponding Master Equation. 
+
+In the Gillespie algorithm, we update the state of the system by determining 
+
+(i) the time $\tau$ to the next reaction
+
+(ii) which reaction $R_{\mu}$ will occur next. 
+
+Assuming that each reaction $R_{\mu}$ is independent with rate $a_{\mu}=h_{\mu}c_{\mu}$, the first occurrence $\tau_{\mu}$ of the reaction $R_{\mu}$ follows the exponential distribution with rate/propensity $a_{\mu}$. The first occurrence time of some reaction is then $\tau=\min_{\mu}\tau_{\mu}$, it follows  the exponential distribution with an overall rate/propensity $A=\sum_{\mu}a_{\mu}$. Given that a reaction occurs, the probability that it is the $\mu'$-th reaction is $P(\mu=\mu')=\frac{a_{\mu'}}{A}$. Therefore the the original Gillespie recipe follows the following steps:
+
+1) Input values $c_{\mu}$, $\mu=1,...,M$ and initial state $Y_0=(x_1,...,x_N)$ at $t_0$.
+
+2) Compute the current propensities $a_{\mu}=h_{\mu}(Y)c_{\mu}$, $\mu=1,...,M$ and $A=\sum_{\mu}a_{\mu}$
+
+3) Generate uniform random numbers $u_1,u_2\in[0,1)$ 
+
+4) Compute the time interval $\tau$ until the next reaction according to distribution $\exp(A)$, i.e., $\tau=-\ln u_1/A$
+
+5) Find the channel of the next reaction $\mu$, i.e., take $\mu$ to be the integer for which $\sum_{\nu=1}^{\mu-1}a_{\nu}<u_2*A\le \sum_{\nu=1}^{\mu}a_{\nu}$
+
+6) Update time $t\rightarrow t+\tau$, and adjust $Y$ in accordance with the particular reaction $R_{\mu}$, i.e., update $Y\rightarrow Y+a_{\mu}$, and proceed to step 2 until $t$ reaches presetting terminal time $T_f$ and obtain a final state $Y_f$ at $T_f$.
+
+
+After generating sufficiently many $N_{Traj}$ such trajectories, we can estimate $P(Y,T_f|Y_0,t_0)=\frac{\# Y_{f,Traj}=Y }{N_{Traj}}$.
+
+The Gillespie algorithm is straightforward and easy to implement. However, it is only an approximate rather than an exact stochastic algorithm. A very large number of trajectories is needed to reach a reasonable accuracy. The complexity of the algorithm is very high and the accuracy is not guaranteed due to randomness. 
+
+
 # Topic Review {#sec-Topic-Review}
 
 When you click the **Knit** button a document will be generated that
@@ -248,3 +309,12 @@ ggplot(simulation, aes(x = Time, y = R)) +
 # Conclusion {#sec-conclusion}
 
 # References
+## Reference
+
+[1]. N. G. V. Kampen, Stochastic Processes in Physics and Chemistry. North-Holland, Amsterdam, 1992.
+
+[2]. T. Lu, D. Volfson, L. Tsimring, J. Hasty, Cellular growth and division in the Gillespie algorithm, Syst Biol (Stevenage). 2004 Jun;1(1):121-8
+
+
+[3]. D. T. Gillespie, “Exact stochastic simulation of coupled chemical reactions,” J. Phys. Chem., vol. 81, no. 25, pp. 2340–2361,
+1977.
