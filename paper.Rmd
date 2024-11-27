@@ -201,14 +201,13 @@ simulation <- simulate_gillespie(state, max_time)
 ```
 
 
-```{r fig-dimerization-sim, echo=FALSE, warning=FALSE, message=FALSE, fig.cap="Thymine Photodimerization Simulation"}
+```{r fig-dimerization-sim, echo=FALSE, warning=FALSE, message=FALSE, fig.cap="Thymine Photodimerization Reaction Set Simulation \\label{fig:dimerization-sim}"}
 # Reshape data for plotting
 simulation_long <- melt(simulation, id.vars = "Time")
 # Plot results
 ggplot(simulation_long, aes(x = Time, y = value, color = variable)) +
   geom_line() +
   labs(
-    title = "Dimerization Reaction Set Simulation",
     x = "Time",
     y = "Molecule Count",
     color = "Species"
@@ -219,7 +218,7 @@ ggplot(simulation_long, aes(x = Time, y = value, color = variable)) +
 ### Observations
 
 Both CPD and 64-PP formation follow logarithmic growth, as expected under specific UV radiation according to previously reported quantum yields (@MartinezFernandez2022; @Mouret2006). The number of reactions per unit time plateaus as the pyrimidine pairs decrease, consistent with the propensity functions.
-Due to the stochastic nature of molecular reactions, this algorithm reflects fluctuations of photodimerization as it models the probabilistic process of each reaction.
+Due to the stochastic nature of molecular reactions, this algorithm reflects fluctuations of photodimerization as it models the probabilistic process of each reaction (Figure \ref{fig:dimerization-sim}).
 
 ### Biological Significance
 - **Dimerization**
@@ -242,7 +241,7 @@ The Gillespie algorithm is used to simulate this system, capturing the inherent 
 
 ### Observations
 
-The simulation results are presented in two figures, each offering unique insights into the behavior of the decay process. Figure \ref(fig-decay-linear) displays the decay on a linear scale, illustrating the overall exponential decline of the radioactive substance over time. Figure \ref(fig-decay-log) presents the same data on a logarithmic scale, highlighting the exponential nature of the process by linearizing the decay trajectory.
+The simulation results are presented in two figures, each offering unique insights into the behavior of the decay process. Figure \ref{fig:decay-linear} displays the decay on a linear scale, illustrating the overall exponential decline of the radioactive substance over time. Figure \ref{fig:decay-log} presents the same data on a logarithmic scale, highlighting the exponential nature of the process by linearizing the decay trajectory.
 
 #### General Explanation of Exponential Decay
 The radioactive decay of \( R \) follows the well-known exponential decay law:
@@ -297,12 +296,12 @@ simulation <- simulate_gillespie(state, max_time)
 
 ```
 
-#### Analysis of Figure \ref(fig-decay-linear)
-Figure \ref{fig:fig-decay-linear} illustrates the exponential decay of \( R \) over time. The steep initial decline in the curve corresponds to the high decay rate at the beginning of the simulation when \( R \) is at its maximum. As \( R \) decreases, the curve flattens, reflecting the slower decay rate. This behavior exemplifies the exponential decay dynamics, where the number of remaining molecules reduces rapidly at first and progressively lessens as the substance depletes.
+#### Analysis of Figure \ref{fig:decay-linear}
+Figure \ref{fig:decay-linear} illustrates the exponential decay of \( R \) over time. The steep initial decline in the curve corresponds to the high decay rate at the beginning of the simulation when \( R \) is at its maximum. As \( R \) decreases, the curve flattens, reflecting the slower decay rate. This behavior exemplifies the exponential decay dynamics, where the number of remaining molecules reduces rapidly at first and progressively lessens as the substance depletes.
 
 The gradual flattening of the curve also underscores the diminishing probability of decay events as time progresses. This effect is a direct result of the propensity function \( a(R) = c \cdot R \), which decreases linearly with \( R \). The linear-scale plot effectively illustrates the overall trend of radioactive decay over time, making it particularly suitable for understanding the macroscopic behavior of the process.
 
-```{r fig-decay-linear, echo=FALSE, warning=FALSE, message=FALSE, fig.cap="Radioactive Decay Simulation in Linear Scale"}
+```{r fig-decay-linear, echo=FALSE, warning=FALSE, message=FALSE, fig.cap="Radioactive Decay Simulation in Linear Scale \\label{fig:decay-linear}"}
 
 # Load ggplot2 for visualization
 library(ggplot2)
@@ -318,12 +317,12 @@ ggplot(simulation, aes(x = Time, y = R)) +
 ```
 
 \newpage
-#### Analysis of Figure \ref(fig-decay-log)
- Figure \ref(fig-decay-log) depicts the same decay trajectory on a logarithmic scale, offering a complementary perspective. On this scale, the exponential decay law is linearized, and the trajectory appears as a straight line. The slope of the line corresponds to the negative decay constant, \(-c\), providing a quantitative validation of the theoretical model.
+#### Analysis of Figure \ref{fig:decay-log}
+ Figure \ref{fig:decay-log} depicts the same decay trajectory on a logarithmic scale, offering a complementary perspective. On this scale, the exponential decay law is linearized, and the trajectory appears as a straight line. The slope of the line corresponds to the negative decay constant, \(-c\), providing a quantitative validation of the theoretical model.
 
 The logarithmic representation also highlights deviations from perfect linearity, which become more noticeable as the molecule count approaches zero. These deviations are the result of stochastic fluctuations inherent in the Gillespie algorithm, particularly in the later stages when \( R \) is low, and individual decay events have a greater impact on the overall trend. This logarithmic plot is especially useful for analyzing the detailed kinetics of the decay process and for confirming the exponential nature of the decay.
 
-```{r fig-decay-log, echo=FALSE, warning=FALSE, message=FALSE, fig.cap="Radioactive Decay Simulation in Logarithmic Scale"}
+```{r fig-decay-log, echo=FALSE, warning=FALSE, message=FALSE, fig.cap="Radioactive Decay Simulation in Logarithmic Scale \\label{fig:decay-log}"}
 # Logarithmic-scale plot
 ggplot(simulation, aes(x = Time, y = R)) +
   geom_line(color = "red") +
