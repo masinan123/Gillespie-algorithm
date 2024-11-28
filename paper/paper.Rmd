@@ -4,8 +4,9 @@ author:
   - Jiayu Guo
   - Sinan Ma 
   - Anna Szydlowski
+thanks: "We would like to thank Dr. Omidali A. Jazifor for his invaluable guidance throughout this project. The source code for simulations can be found on our [GitHub repository](https://github.com/masinan123/Gillespie-algorithm.git)."
 date: "`r Sys.Date()`"
-abstract: "The Gillespie Algorithm provides a robust framework for simulating stochastic molecular reaction networks, capturing the inherent randomness of chemical and biochemical processes. Unlike deterministic methods, the algorithm accurately models systems with low molecular counts, where fluctuations significantly influence reaction dynamics. This project explores the theoretical foundation of the Gillespie Algorithm, including its basis in the master equation, and demonstrates its application in simulating two molecular systems: the photodimerization of thymine, a process linked to UV-induced DNA damage, and the radioactive decay of isotopes. Through these simulations, the algorithm's capability to model stochastic trajectories is highlighted, offering insights into reaction mechanisms and the role of randomness in molecular processes. The implications of these findings extend to a variety of disciplines, including molecular biology, environmental monitoring, and nuclear medicine."
+abstract: "The Gillespie Algorithm provides a framework for simulating stochastic molecular reaction networks, capturing the inherent randomness of chemical and biochemical processes. Unlike deterministic methods, the algorithm accurately models systems with low molecular counts, where fluctuations significantly influence reaction dynamics. This project explores the theoretical foundation of the Gillespie Algorithm, including its basis in the master equation, and demonstrates its application in simulating two molecular systems: the photodimerization of thymine, a process linked to UV-induced DNA damage, and the radioactive decay of isotopes. Through these simulations, the algorithm's capability to model stochastic trajectories is highlighted, offering insights into reaction mechanisms and the role of randomness in molecular processes. The implications of these findings extend to a variety of disciplines, including molecular biology, environmental monitoring, and nuclear medicine."
 output:
   pdf_document:
     number_sections: true
@@ -246,6 +247,7 @@ The Gillespie algorithm is used to simulate this system, capturing the inherent 
 The simulation results are presented in two figures, each offering unique insights into the behavior of the decay process. Figure \ref{fig:decay-linear} displays the decay on a linear scale, illustrating the overall exponential decline of the radioactive substance over time. Figure \ref{fig:decay-log} presents the same data on a logarithmic scale, highlighting the exponential nature of the process by linearizing the decay trajectory.
 
 #### General Explanation of Exponential Decay
+
 The radioactive decay of \( R \) follows the well-known exponential decay law:
 
 \[
@@ -298,7 +300,8 @@ simulation <- simulate_gillespie(state, max_time)
 
 ```
 
-#### Analysis of Figure \ref{fig:decay-linear}
+#### Analysis of Radioactive Decay Simulation in Linear Scale (Figure \ref{fig:decay-linear})
+
 Figure \ref{fig:decay-linear} illustrates the exponential decay of \( R \) over time. The steep initial decline in the curve corresponds to the high decay rate at the beginning of the simulation when \( R \) is at its maximum. As \( R \) decreases, the curve flattens, reflecting the slower decay rate. This behavior exemplifies the exponential decay dynamics, where the number of remaining molecules reduces rapidly at first and progressively lessens as the substance depletes.
 
 The gradual flattening of the curve also underscores the diminishing probability of decay events as time progresses. This effect is a direct result of the propensity function \( a(R) = c \cdot R \), which decreases linearly with \( R \). The linear-scale plot effectively illustrates the overall trend of radioactive decay over time, making it particularly suitable for understanding the macroscopic behavior of the process.
@@ -319,8 +322,9 @@ ggplot(simulation, aes(x = Time, y = R)) +
 ```
 
 \newpage
-#### Analysis of Figure \ref{fig:decay-log}
- Figure \ref{fig:decay-log} depicts the same decay trajectory on a logarithmic scale, offering a complementary perspective. On this scale, the exponential decay law is linearized, and the trajectory appears as a straight line. The slope of the line corresponds to the negative decay constant, \(-c\), providing a quantitative validation of the theoretical model.
+#### Analysis of Radioactive Decay Simulation in Logarithmic Scale (Figure \ref{fig:decay-log})
+
+Figure \ref{fig:decay-log} depicts the same decay trajectory on a logarithmic scale, offering a complementary perspective. On this scale, the exponential decay law is linearized, and the trajectory appears as a straight line. The slope of the line corresponds to the negative decay constant, \(-c\), providing a quantitative validation of the theoretical model.
 
 The logarithmic representation also highlights deviations from perfect linearity, which become more noticeable as the molecule count approaches zero. These deviations are the result of stochastic fluctuations inherent in the Gillespie algorithm, particularly in the later stages when \( R \) is low, and individual decay events have a greater impact on the overall trend. This logarithmic plot is especially useful for analyzing the detailed kinetics of the decay process and for confirming the exponential nature of the decay.
 
@@ -340,6 +344,7 @@ ggplot(simulation, aes(x = Time, y = R)) +
 ### Biological and Physical Significance
 
 #### Radioactive Half-Life
+
 The exponential decay observed in the simulation aligns with the concept of half-life, a critical measure in the study of radioactive processes. The half-life (\( t_{1/2} \)) is defined as the time required for half of the radioactive substance to decay (@Henriksen2002). It can be calculated as:
 
 \[
@@ -349,16 +354,18 @@ t_{1/2} = \frac{\ln(2)}{c}
 For the decay constant \( c = 0.01 \) used in this simulation, the half-life is approximately \( t_{1/2} \approx 69.3 \) time units. This simulation demonstrates how the decay rate slows down over time as the radioactive substance depletes, with the time between successive decay events increasing in proportion to the decreasing molecule count.
 
 #### Implications and Real-World Applications
-Radioactive decay is a fundamental phenomenon in nuclear physics and has wide-ranging applications across multiple scientific disciplines. For instance, in nuclear medicine, the controlled decay of radioactive isotopes is utilized in radiotherapy to deliver targeted doses of radiation for cancer treatment. Similarly, in environmental science, the decay of isotopes such as radon is monitored to assess contamination levels and potential health risks.
 
-The stochastic approach modeled here provides critical insights into systems with low molecule counts, where randomness plays a significant role. For example, in radiological dosimetry, small-scale decay dynamics can impact the precision of dose delivery. Likewise, in environmental monitoring, understanding the stochastic nature of decay processes aids in the interpretation of measurement data, particularly in situations where low concentrations of isotopes are involved.
+Radioactive decay is a fundamental phenomenon in nuclear physics and has wide-ranging applications across multiple scientific disciplines. For instance, in nuclear medicine, the controlled decay of radioactive isotopes is utilized in radiotherapy to deliver targeted doses of radiation for cancer treatment (@britannica_radioactivity). Similarly, in environmental science, the decay of isotopes such as carbon-14 is monitored to assess contamination levels and potential health risks (@openmedscience_carbon14_decay).
+
+The stochastic approach modeled here provides insights into systems with low molecule counts, where randomness plays a significant role. For example, in radiological dosimetry, small-scale decay dynamics can impact the precision of dose delivery. In environmental monitoring, understanding the stochastic nature of decay processes aids in the interpretation of measurement data, particularly in situations where low concentrations of isotopes are involved.
 
 In the broader context of molecular reaction networks, the Gillespie algorithm's ability to capture both macroscopic trends and stochastic variations makes it an invaluable tool for studying systems with inherent randomness. By accurately simulating individual reaction events, it bridges the gap between theoretical models and real-world observations, offering a deeper understanding of complex kinetic processes.
 
 # Conclusion {#sec-conclusion}
-The Gillespie Algorithm represents a significant advancement in the numerical simulation of stochastic molecular reaction networks. Its ability to generate statistically valid trajectories of reaction systems provides critical insights into processes governed by inherent randomness, especially in systems with low molecule counts. This study has illustrated the versatility and power of the algorithm through two applications: the photodimerization of thymine and the radioactive decay of isotopes. 
 
-The simulation of thymine photodimerization highlighted the algorithm’s capacity to model complex reaction networks, offering a detailed view of the formation of UV-induced DNA lesions such as CPDs and 64-PPs. This has direct implications for understanding the molecular origins of UV-induced mutagenesis and skin cancer. Similarly, the radioactive decay simulation demonstrated the algorithm’s precision in modeling exponential decay processes and capturing stochastic fluctuations, a crucial feature for understanding radioactive isotopes in fields such as nuclear medicine and environmental science.
+The Gillespie Algorithm represents a significant role in the numerical simulation of stochastic molecular reaction networks. Its ability to generate statistically trajectories of reaction systems provides insights into processes governed by inherent randomness, especially in systems with low molecule counts. This project has illustrated the versatility and power of the algorithm through two applications: the photodimerization of thymine and the radioactive decay of isotopes. 
+
+The [thymine photodimerization simulation](#sec-Photodimerization) illustrated the algorithm’s capacity to model complex reaction networks, offering a detailed view of the formation of UV-induced DNA lesions such as CPDs and 64-PPs. This has direct implications for understanding the molecular origins of UV-induced mutagenesis and skin cancer. Similarly, the [radioactive decay simulation](#sec-Decay) demonstrated the algorithm’s precision in modeling exponential decay processes and capturing stochastic fluctuations, a crucial feature for understanding radioactive isotopes in fields such as nuclear medicine and environmental science.
 
 While the Gillespie Algorithm excels at modeling stochastic dynamics, it is not without limitations. The computational cost of simulating systems with large molecule counts or numerous reaction channels can become prohibitive, and its reliance on random number generation introduces variability that requires a sufficiently large number of trajectories for robust statistical analysis. Nevertheless, its utility in studying molecular systems with inherent randomness cannot be overstated.
 
@@ -374,12 +381,12 @@ The implications of this work extend beyond the specific applications discussed.
 
 \appendix
 \section{Appendix}
-## R Code for [4.1 Photodimerization Simulation](#sec-Photodimerization)
+## R Code for [Photodimerization Simulation](#sec-Photodimerization) (section 4.1)
 
-```{r a1, echo=TRUE, eval=FALSE, message=FALSE, warning=FALSE, include=TRUE}
-# Load required libraries
-if (!require("reshape2")) install.packages("reshape2")
-if (!require("ggplot2")) install.packages("ggplot2")
+### Simulation
+
+```{r application-1, echo=TRUE, eval=FALSE, message=FALSE, warning=FALSE, include=TRUE}
+# Work environment set-up
 library(reshape2)
 library(ggplot2)
 # Define reaction rates
@@ -446,6 +453,11 @@ simulate_gillespie <- function(state, max_time) {
   output[] <- lapply(output, as.numeric)
   return(output)
 }
+```
+
+### Visulization for Figure \ref{fig:dimerization}
+
+```{r figure-1, echo=TRUE, eval=FALSE, message=FALSE, warning=FALSE, include=TRUE}
 # Run the simulation
 max_time <- 100
 simulation <- simulate_gillespie(state, max_time)
@@ -463,12 +475,15 @@ ggplot(simulation_long, aes(x = Time, y = value, color = variable)) +
   theme_minimal()
 ```
 
-## R code for [4.2 Radioactive Decay Simulation](#sec-Decay)
-```{r a2, echo=TRUE, eval=FALSE, message=FALSE, warning=FALSE, include=TRUE}
+## R code for [Radioactive Decay Simulation](#sec-Decay) (section 4.2)
+
+### Simulation
+
+```{r application-2, echo=TRUE, eval=FALSE, message=FALSE, warning=FALSE, include=TRUE}
 # Define parameters
 c <- 0.01  # Decay rate constant
 state <- c(R = 10000)  # Initial radioactive substance
-max_time <- 1000  # Extended maximum simulation time
+max_time <- 1000  
 
 # Define propensity function
 propensities <- function(state) {
@@ -502,8 +517,11 @@ simulate_gillespie <- function(state, max_time) {
 
 # Run the simulation
 simulation <- simulate_gillespie(state, max_time)
+```
 
+### Visulization for Figure \ref{fig:decay-linear}
 
+```{r figure-2, echo=TRUE, eval=FALSE, message=FALSE, warning=FALSE, include=TRUE}
 # Load ggplot2 for visualization
 library(ggplot2)
 
@@ -515,7 +533,11 @@ ggplot(simulation, aes(x = Time, y = R)) +
     y = "Remaining Radioactive Substance (R)"
   ) +
   theme_minimal()
+```
 
+### Visulization for Figure \ref{fig:decay-log}
+
+```{r figure-3, echo=TRUE, eval=FALSE, message=FALSE, warning=FALSE, include=TRUE}
 # Logarithmic-scale plot
 ggplot(simulation, aes(x = Time, y = R)) +
   geom_line(color = "red") +
