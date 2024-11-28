@@ -115,15 +115,15 @@ This section explores the practical application of the Gillespie Algorithm by si
 ## Photodimerization Simulation {#sec-Photodimerization}
 We can simulate the dimerization of DNA pyrimidines, a molecular reaction which can lead to skin cancer. Bipyrimidine photodimerization occurs when UV radiation alters the chemical bonds of two consecutive pyrimidine bases, with two possible outcomes: the formation of the cyclobutene pyrimidine dimer (CPD) if a cycloaddition between the C5-C6 double bond of the pyrimidines occurs, or the formation of pyrimidine (6-4) pyrimidone (64-PP) if  a covalent bond forms between C4 and C6 of the pyrimidines (@MartinezFernandez2022).
 
-Therefore, this simulation involves four species: pyrimidine monomers Thymine 1 (\( T1 \)), Thymine 2 (\( T2 \)), and dimer photoproducts \( CPD \) and \( 64PP \); and two reactions channels: \( c1 \) and \( c2 \).
+Therefore, this simulation involves four species: pyrimidine monomers Thymine 1 (\( T_1 \)), Thymine 2 (\( T_2 \)), and dimer photoproducts \( CPD \) and \( 64PP \); and two reactions channels: \( c_1 \) and \( c_2 \).
 \[
-T1 + T2 \xrightarrow{c1} CPD
+T_1 + T_2 \xrightarrow{c_1} CPD
 \]
 \[
-T1 + T2 \xrightarrow{c2} 64PP
+T_1 + T_2 \xrightarrow{c_2} 64PP
 \]
 
-We will simulate the dimerization of thymine using propensity based on the formation yield of CPD (~37 per 10^6 normal bases) and 64-PP (~2 per 10^6 normal bases) found by exposing skin cells to a UVB dose of 0.2 J/cm^2 (@Mouret2006). As the amount of thymine bases in DNA varies from person to person, we will simulate thymine photodimerization of 1000 pairs of thymine.
+We will simulate the dimerization of thymine using propensity based on the formation yield of CPD (~37 per \(10^6\) normal bases) and 64-PP (~2 per \(10^6\) normal bases) found by exposing skin cells to a UVB dose of 0.2 \(J/cm^2\) (@Mouret2006). As the amount of thymine bases in DNA varies from person to person, we will simulate thymine photodimerization of 1000 pairs of thymine.
 
 ```{r simulation_1, echo=FALSE, warning=FALSE, message=FALSE}
 # Load required libraries
