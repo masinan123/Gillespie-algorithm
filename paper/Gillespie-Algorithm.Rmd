@@ -4,7 +4,7 @@ author:
   - Jiayu Guo
   - Sinan Ma 
   - Anna Szydlowski
-thanks: "We would like to thank Dr. Omidali A. Jazifor for his invaluable guidance throughout this project. The source code for simulations can be found on our [GitHub repository](https://github.com/masinan123/Gillespie-algorithm.git)."
+thanks: "We would like to thank Dr. Omidali A. Jazi for his invaluable guidance throughout this project. The source code for simulations can be found on our [GitHub repository](https://github.com/masinan123/Gillespie-algorithm.git)."
 date: "`r Sys.Date()`"
 abstract: "The Gillespie Algorithm provides a framework for simulating stochastic molecular reaction networks, capturing the inherent randomness of chemical and biochemical processes. Unlike deterministic methods, the algorithm accurately models systems with low molecular counts, where fluctuations significantly influence reaction dynamics. This project explores the theoretical foundation of the Gillespie Algorithm, including its basis in the master equation, and demonstrates its application in simulating two molecular systems: the photodimerization of thymine, a process linked to UV-induced DNA damage, and the radioactive decay of isotopes. Through these simulations, the algorithm's capability to model stochastic trajectories is highlighted, offering insights into reaction mechanisms and the role of randomness in molecular processes. The implications of these findings extend to a variety of disciplines, including molecular biology, environmental monitoring, and nuclear medicine."
 output:
@@ -517,7 +517,7 @@ simulate_gillespie <- function(state, max_time) {
 simulation <- simulate_gillespie(state, max_time)
 ```
 
-### Visulization for Figure \ref{fig:decay-linear}
+### Visulization for Figure \ref{fig:decay-linear} and Figure \ref{fig:decay-log}
 
 ```{r figure-2, echo=TRUE, eval=FALSE, message=FALSE, warning=FALSE, include=TRUE}
 # Load ggplot2 for visualization
@@ -532,8 +532,6 @@ ggplot(simulation, aes(x = Time, y = R)) +
   ) +
   theme_minimal()
 ```
-
-### Visulization for Figure \ref{fig:decay-log}
 
 ```{r figure-3, echo=TRUE, eval=FALSE, message=FALSE, warning=FALSE, include=TRUE}
 # Logarithmic-scale plot
