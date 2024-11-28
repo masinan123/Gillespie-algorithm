@@ -28,7 +28,7 @@ These findings underscore the versatility of the Gillespie Algorithm for studyin
 ## Usage
 
 ### Prerequisites
-To replicate the analysis, you will need:
+To replicate the paper, you will need:
 - R (version 4.0 or later)
 - The following R packages: `GillespieSSA`, `ggplot2`.
 
