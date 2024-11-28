@@ -10,6 +10,8 @@ output:
   pdf_document:
     number_sections: true
     citation_package: biblatex
+linkcolor: blue
+urlcolor: blue
 spacing: double
 header-includes:
   - \usepackage{fancyhdr}
@@ -19,9 +21,6 @@ header-includes:
   - \fancyfoot[LE,RO]{\thepage}
   - \usepackage{setspace}
   - \doublespacing
-  - \usepackage{xcolor} 
-  - \usepackage{hyperref}
-  - \hypersetup{colorlinks = true, linkcolor = blue}
 
 bibliography: references.bib 
 editor_options: 
