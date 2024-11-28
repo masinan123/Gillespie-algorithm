@@ -44,7 +44,7 @@ The Gillespie Algorithm was presented in 1976 by Daniel T. Gillespie (@Gillespie
 
 Biochemical reactions in living cells are inherently stochastic. Reactions occur at random intervals, and the state of the system at any given time determines the probability of a particular chemical reaction occurring next. This stochasticity arises from the random thermal motion of molecules and the small numbers of reactant molecules involved. When molecule counts are low (often in the range of dozens or hundreds), random fluctuations in molecule collisions and interactions become significant, making reaction timing and outcomes probabilistic rather than deterministic. Consequently, deterministic approaches fail to accurately capture the dynamics of such systems, necessitating stochastic simulation methods like the Gillespie Algorithm.
 
-In the following sections, we will first provide an overview of the Gillespie Algorithm and its historical development in the [Section 2](#sec-Topic-Review). Next, the theoretical underpinnings of the algorithm, including its basis in the master equation and stochastic modeling principles, will be detailed in the [Section 3](#sec-Theory). We will then demonstrate the application of the Gillespie Algorithm to two molecular systems in the [Section 4](#sec-application): the photodimerization of thymine, a DNA damage process induced by UV radiation (@MartinezFernandez2022), and the stochastic decay of radioactive isotopes (@Mouret2006). These simulations will be performed using the R programming language (@citeR). Finally, our [Section 5](#sec-conclusion) will summarize the findings, discuss the algorithm's broader implications, and explore potential future applications.
+In the following sections, we will first provide an overview of the Gillespie Algorithm and its historical development in the [Section 2](#sec-Topic-Review). Next, the theoretical underpinnings of the algorithm, including its basis in the master equation and stochastic modeling principles, will be detailed in the [Section 3](#sec-Theory). We will then demonstrate the application of the Gillespie Algorithm to two molecular systems in the [Section 4](#sec-application): the photodimerization of thymine, and the stochastic decay of radioactive isotopes. These simulations will be performed using the R programming language (@citeR). Finally, our [Section 5](#sec-conclusion) will summarize the findings, discuss the algorithm's broader implications, and explore potential future applications.
 
 
 # Topic Review {#sec-Topic-Review}
@@ -126,9 +126,7 @@ T_1 + T_2 \xrightarrow{c_2} 64PP
 We will simulate the dimerization of thymine using propensity based on the formation yield of CPD (~37 per \(10^6\) normal bases) and 64-PP (~2 per \(10^6\) normal bases) found by exposing skin cells to a UVB dose of 0.2 \(J/cm^2\) (@Mouret2006). As the amount of thymine bases in DNA varies from person to person, we will simulate thymine photodimerization of 1000 pairs of thymine.
 
 ```{r simulation_1, echo=FALSE, warning=FALSE, message=FALSE}
-# Load required libraries
-if (!require("reshape2")) install.packages("reshape2")
-if (!require("ggplot2")) install.packages("ggplot2")
+# Environment set-up
 library(reshape2)
 library(ggplot2)
 # Define reaction rates
@@ -263,7 +261,7 @@ While the decay trajectory conforms to deterministic exponential decay theory, t
 # Define parameters
 c <- 0.01  # Decay rate constant
 state <- c(R = 10000)  # Initial radioactive substance
-max_time <- 1000  # Extended maximum simulation time
+max_time <- 1000  
 
 # Define propensity function
 propensities <- function(state) {
